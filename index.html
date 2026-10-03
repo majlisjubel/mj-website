@@ -382,9 +382,13 @@ header{
 
 <script>
 function showProduct(button, text){
-  const detail = button.parentElement.nextElementSibling;
-  detail.querySelector("p").textContent = text;
-  detail.classList.toggle("show");
+  const product = button.closest(".product");
+  const detail = product.nextElementSibling;
+
+  if(detail && detail.classList.contains("product-detail")){
+    detail.querySelector("p").textContent = text;
+    detail.classList.toggle("show");
+  }
 }
 </script>
   <body>
