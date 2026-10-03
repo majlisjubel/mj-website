@@ -452,7 +452,7 @@ color:white;
 <section class="products">
 
 <h2>Produk Terbaru</h2>
-
+<div id="supabaseProducts"></div>
 <div class="product">
   <div class="product-icon">🎮</div>
   <div class="product-info">
@@ -582,16 +582,42 @@ const supabase = window.supabase.createClient(
 );
 </script>
   <script>
-async function testSupabase(){
+async function loadProducts(){
   const { data, error } = await supabase
     .from("products")
-    .select("*");
+    .select("*")
+    .order("created_at", { ascending:false });
 
-  console.log(data);
-  console.log(error);
+  if(error){
+    console.error(error);
+    return;
+  }
+
+  const container = document.getElementById("supabaseProducts");
+
+  container.innerHTML = data.map(product => `
+    <div class="product">
+      <div class="product-icon">🎮</div>
+
+      <div class="product-info">
+        <h3>${product.name}</h3>
+        <p>${product.category}</p>
+        <strong>Rp${Number(product.price).toLocaleString("id-ID")}</strong>
+      </div>
+
+      <button class="order-btn"
+        onclick="showProduct(this,'${product.description}')">
+        Lihat
+      </button>
+    </div>
+
+    <div class="product-detail">
+      <p></p>
+    </div>
+  `).join("");
 }
 
-testSupabase();
-  </script>
+loadProducts();
+</script>
   </body>
   </html>
