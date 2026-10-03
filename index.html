@@ -506,7 +506,7 @@ header{
       <div class="product-info">
         <h3>Nomor Virtual</h3>
         <p>Untuk penggunaan yang sesuai</p>
-        <strong>Cek stok</strong>
+        <strong>Cek stok & harga</strong>
       </div>
       <button class="order-btn" onclick="showProduct(this,'Nomor virtual untuk penggunaan yang sesuai. Stok dan harga dapat dikonfirmasi melalui WhatsApp MJ.')">Lihat</button>
     </div>
@@ -632,7 +632,12 @@ document.addEventListener("DOMContentLoaded", function () {
       container.innerHTML = data.map(product => {
         const name = product.name || "Produk Tanpa Nama";
         const category = product.category || "Umum";
-        const price = product.price ? Number(product.price).toLocaleString("id-ID") : "0";
+        
+        // PERBAIKAN HARGA: Jika harga null, undefined, atau 0, tampilkan teks kustom
+        let priceDisplay = "Cek stok & harga";
+        if (product.price && Number(product.price) > 0) {
+          priceDisplay = "Rp" + Number(product.price).toLocaleString("id-ID");
+        }
         
         const safeDesc = (product.description || "Tidak ada deskripsi")
           .replace(/'/g, "\\'")
@@ -645,7 +650,7 @@ document.addEventListener("DOMContentLoaded", function () {
               <div class="product-info">
                 <h3>${name}</h3>
                 <p>${category}</p>
-                <strong>Rp${price}</strong>
+                <strong>${priceDisplay}</strong>
               </div>
               <button class="order-btn" onclick="showProduct(this, '${safeDesc}')">Lihat</button>
             </div>
