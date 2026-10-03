@@ -570,5 +570,15 @@ searchInput.addEventListener("input", function(){
   });
 });
 </script>
-</body>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script>
+const SUPABASE_URL = "https://sgadlmoskhfyyksobggk.supabase.co";
+const SUPABASE_KEY = "sb_publishable_pTv7oZ79aOKNtpzUqAeaaw_47fYJfih";
+
+const supabase = window.supabase.createClient(
+  SUPABASE_URL,
+  SUPABASE_KEY
+);
+</script></body>
   </html>
