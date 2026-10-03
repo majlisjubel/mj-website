@@ -120,14 +120,37 @@ header{
   border-color: #f05b9b;
 }
 
-.card-header-badge {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 6px;
+.card-image-wrapper {
+  position: relative;
+  width: 100%;
+  padding-top: 100%;
+  background: #251e2b;
+}
+
+.card-img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 .badge-game {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(4px);
+  color: #ffffff;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 3px 7px;
+  border-radius: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.nokos-badge-game {
   background: rgba(255, 255, 255, 0.1);
   color: #ffffff;
   font-size: 10px;
@@ -137,8 +160,15 @@ header{
   border: 1px solid rgba(255, 255, 255, 0.15);
 }
 
+.card-header-badge {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 6px;
+}
+
 .card-body {
-  padding: 14px;
+  padding: 12px;
   display: flex;
   flex-direction: column;
   gap: 6px;
@@ -158,18 +188,21 @@ header{
 
 .card-title {
   color: #ffffff;
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 700;
   line-height: 1.35;
-  margin-top: 4px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 .card-price {
   color: #f05b9b;
-  font-size: 15px;
+  font-size: 14px;
   font-weight: 800;
   margin-top: auto;
-  padding-top: 6px;
+  padding-top: 4px;
 }
 
 .modal{
@@ -247,7 +280,7 @@ header{
       <div class="card-body">
         <div class="card-header-badge">
           <span class="badge-tag">READY</span>
-          <span class="badge-game">NOKOS</span>
+          <span class="nokos-badge-game">NOKOS</span>
         </div>
         <h3 class="card-title">🔹 WhatsApp</h3>
         <div class="card-price">Rp 6.000</div>
@@ -259,7 +292,7 @@ header{
       <div class="card-body">
         <div class="card-header-badge">
           <span class="badge-tag">READY</span>
-          <span class="badge-game">NOKOS</span>
+          <span class="nokos-badge-game">NOKOS</span>
         </div>
         <h3 class="card-title">🔹 Facebook</h3>
         <div class="card-price">Rp 1.200</div>
@@ -271,7 +304,7 @@ header{
       <div class="card-body">
         <div class="card-header-badge">
           <span class="badge-tag">READY</span>
-          <span class="badge-game">NOKOS</span>
+          <span class="nokos-badge-game">NOKOS</span>
         </div>
         <h3 class="card-title">🔹 Google / Gmail / YT</h3>
         <div class="card-price">Rp 1.200</div>
@@ -283,7 +316,7 @@ header{
       <div class="card-body">
         <div class="card-header-badge">
           <span class="badge-tag">READY</span>
-          <span class="badge-game">NOKOS</span>
+          <span class="nokos-badge-game">NOKOS</span>
         </div>
         <h3 class="card-title">🔹 DANA</h3>
         <div class="card-price">Rp 3.000</div>
@@ -295,7 +328,7 @@ header{
       <div class="card-body">
         <div class="card-header-badge">
           <span class="badge-tag">READY</span>
-          <span class="badge-game">NOKOS</span>
+          <span class="nokos-badge-game">NOKOS</span>
         </div>
         <h3 class="card-title">🔹 OVO</h3>
         <div class="card-price">Rp 1.600</div>
@@ -307,7 +340,7 @@ header{
       <div class="card-body">
         <div class="card-header-badge">
           <span class="badge-tag">READY</span>
-          <span class="badge-game">NOKOS</span>
+          <span class="nokos-badge-game">NOKOS</span>
         </div>
         <h3 class="card-title">🔹 SeaBank</h3>
         <div class="card-price">Rp 3.000</div>
@@ -393,90 +426,6 @@ function renderProducts() {
       priceDisplay = "Rp " + Number(p.price).toLocaleString("id-ID");
     }
 
-    const desc = (p.description || "Belum ada deskripsi").replace(/'/g, "\\'");
-
-    return `
-      <div class="card-product" onclick="openModal('${name}', '${desc}', '${priceDisplay}')">
-        <div class="card-body">
-          <div class="card-header-badge">
-            <span class="badge-tag">READY</span>
-            <span class="badge-game">${category}</span>
-          </div>
-          <h3 class="card-title">${name}</h3>
-          <div class="card-price">${priceDisplay}</div>
-        </div>
-      </div>
-    `;
-  }).join("");
-}
-
-function openModal(title, desc, price) {
-  document.getElementById("modalTitle").innerText = title;
-  document.getElementById("modalDesc").innerText = desc + "\n\nHarga: " + price;
-  
-  const textWa = encodeURIComponent(`Halo Admin Majlis Jubel 👋, saya mau order produk berikut:\n\n🔹 Layanan: ${title}\n💰 Harga: ${price}\n\nApakah stoknya ready? Mohon diproses ya, terima kasih!`);
-  document.getElementById("modalWaBtn").href = `https://wa.me/6285179807522?text=${textWa}`;
-  
-  document.getElementById("detailModal").style.display = "flex";
-}
-
-function closeModal() {
-  document.getElementById("detailModal").style.display = "none";
-}
-
-document.getElementById("searchInput").addEventListener("input", renderProducts);
-
-function filterCategory(el, catName) {
-  document.querySelectorAll(".category").forEach(c => c.classList.remove("active-cat"));
-  el.classList.add("active-cat");
-  currentCategory = catName;
-  
-  const nokosSection = document.getElementById("nokos-section");
-  if (catName === 'Semua' || catName === 'Nokos') {
-    nokosSection.style.display = "block";
-  } else {
-    nokosSection.style.display = "none";
-  }
-
-  renderProducts();
-}
-
-document.addEventListener("DOMContentLoaded", loadProducts);
-</script>
-</body>
-</html>
-
-}
-
-function renderProducts() {
-  const container = document.getElementById("product-container");
-  const keyword = document.getElementById("searchInput").value.toLowerCase();
-
-  const filtered = allProducts.filter(p => {
-    const name = (p.name || "").toLowerCase();
-    const cat = (p.category || "").toLowerCase();
-    const desc = (p.description || "").toLowerCase();
-    
-    const matchesSearch = name.includes(keyword) || cat.includes(keyword) || desc.includes(keyword);
-    const matchesCat = (currentCategory === "Semua") || cat.includes(currentCategory.toLowerCase()) || name.includes(currentCategory.toLowerCase());
-
-    return matchesSearch && matchesCat;
-  });
-
-  if (filtered.length === 0) {
-    container.innerHTML = '<p style="color:#aaa; grid-column: 1/-1; text-align:center; padding:20px;">Tidak ada produk ditemukan.</p>';
-    return;
-  }
-
-  container.innerHTML = filtered.map(p => {
-    const name = p.name || "Produk Tanpa Nama";
-    const category = p.category || "PRODUK";
-    
-    let priceDisplay = "Cek Stok";
-    if (p.price && Number(p.price) > 0) {
-      priceDisplay = "Rp " + Number(p.price).toLocaleString("id-ID");
-    }
-
     const imgUrl = (p.image_url && p.image_url.trim() !== "") 
       ? p.image_url 
       : "https://via.placeholder.com/300x300/251e2b/ffffff?text=MJ+MARKET";
@@ -520,7 +469,6 @@ function filterCategory(el, catName) {
   el.classList.add("active-cat");
   currentCategory = catName;
   
-  // Kontrol Sembunyikan/Tampilkan Seluruh Bagian Nokos (Judul + Kartu)
   const nokosSection = document.getElementById("nokos-section");
   if (catName === 'Semua' || catName === 'Nokos') {
     nokosSection.style.display = "block";
