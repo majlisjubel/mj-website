@@ -253,78 +253,81 @@ header{
   <div class="category" onclick="filterCategory(this, 'Roblox')">Roblox</div>
 </div>
 
-<div class="section-title">📱 LIST HARGA NOKOS</div>
+<!-- SECTION NOKOS DIBUNGKUS WAPPER AGAR JUDUL BISA DISAMBUNGKAN/DISEMBUNYIKAN SEKALIAN -->
+<div id="nokos-section">
+  <div class="section-title">📱 LIST HARGA NOKOS</div>
 
-<div class="product-grid" id="nokos-static-grid">
-  <div class="card-product" onclick="openModal('Nokos WhatsApp', 'Nomor Kosong / OTP Instan WhatsApp Fresh', 'Rp 6.000')">
-    <div class="card-image-wrapper">
-      <img src="https://via.placeholder.com/300x300/25d366/ffffff?text=WhatsApp" alt="WhatsApp" class="card-img">
-      <span class="badge-game">NOKOS</span>
+  <div class="product-grid">
+    <div class="card-product" onclick="openModal('Nokos WhatsApp', 'Nomor Kosong / OTP Instan WhatsApp Fresh', 'Rp 6.000')">
+      <div class="card-image-wrapper">
+        <img src="https://via.placeholder.com/300x300/25d366/ffffff?text=WhatsApp" alt="WhatsApp" class="card-img">
+        <span class="badge-game">NOKOS</span>
+      </div>
+      <div class="card-body">
+        <span class="badge-tag">READY</span>
+        <h3 class="card-title">🔹 WhatsApp</h3>
+        <div class="card-price">Rp 6.000</div>
+      </div>
     </div>
-    <div class="card-body">
-      <span class="badge-tag">READY</span>
-      <h3 class="card-title">🔹 WhatsApp</h3>
-      <div class="card-price">Rp 6.000</div>
-    </div>
-  </div>
 
-  <div class="card-product" onclick="openModal('Nokos Facebook', 'Nomor Kosong / OTP Instan Facebook Fresh', 'Rp 1.200')">
-    <div class="card-image-wrapper">
-      <img src="https://via.placeholder.com/300x300/1877f2/ffffff?text=Facebook" alt="Facebook" class="card-img">
-      <span class="badge-game">NOKOS</span>
+    <div class="card-product" onclick="openModal('Nokos Facebook', 'Nomor Kosong / OTP Instan Facebook Fresh', 'Rp 1.200')">
+      <div class="card-image-wrapper">
+        <img src="https://via.placeholder.com/300x300/1877f2/ffffff?text=Facebook" alt="Facebook" class="card-img">
+        <span class="badge-game">NOKOS</span>
+      </div>
+      <div class="card-body">
+        <span class="badge-tag">READY</span>
+        <h3 class="card-title">🔹 Facebook</h3>
+        <div class="card-price">Rp 1.200</div>
+      </div>
     </div>
-    <div class="card-body">
-      <span class="badge-tag">READY</span>
-      <h3 class="card-title">🔹 Facebook</h3>
-      <div class="card-price">Rp 1.200</div>
-    </div>
-  </div>
 
-  <div class="card-product" onclick="openModal('Nokos Google / Gmail / YouTube', 'Nomor Kosong / OTP Instan Google, Gmail, dan YouTube', 'Rp 1.200')">
-    <div class="card-image-wrapper">
-      <img src="https://via.placeholder.com/300x300/ea4335/ffffff?text=Google" alt="Google" class="card-img">
-      <span class="badge-game">NOKOS</span>
+    <div class="card-product" onclick="openModal('Nokos Google / Gmail / YouTube', 'Nomor Kosong / OTP Instan Google, Gmail, dan YouTube', 'Rp 1.200')">
+      <div class="card-image-wrapper">
+        <img src="https://via.placeholder.com/300x300/ea4335/ffffff?text=Google" alt="Google" class="card-img">
+        <span class="badge-game">NOKOS</span>
+      </div>
+      <div class="card-body">
+        <span class="badge-tag">READY</span>
+        <h3 class="card-title">🔹 Google / Gmail / YT</h3>
+        <div class="card-price">Rp 1.200</div>
+      </div>
     </div>
-    <div class="card-body">
-      <span class="badge-tag">READY</span>
-      <h3 class="card-title">🔹 Google / Gmail / YT</h3>
-      <div class="card-price">Rp 1.200</div>
-    </div>
-  </div>
 
-  <div class="card-product" onclick="openModal('Nokos DANA', 'Nomor Kosong / OTP Instan Aplikasi DANA', 'Rp 3.000')">
-    <div class="card-image-wrapper">
-      <img src="https://via.placeholder.com/300x300/118eea/ffffff?text=DANA" alt="DANA" class="card-img">
-      <span class="badge-game">NOKOS</span>
+    <div class="card-product" onclick="openModal('Nokos DANA', 'Nomor Kosong / OTP Instan Aplikasi DANA', 'Rp 3.000')">
+      <div class="card-image-wrapper">
+        <img src="https://via.placeholder.com/300x300/118eea/ffffff?text=DANA" alt="DANA" class="card-img">
+        <span class="badge-game">NOKOS</span>
+      </div>
+      <div class="card-body">
+        <span class="badge-tag">READY</span>
+        <h3 class="card-title">🔹 DANA</h3>
+        <div class="card-price">Rp 3.000</div>
+      </div>
     </div>
-    <div class="card-body">
-      <span class="badge-tag">READY</span>
-      <h3 class="card-title">🔹 DANA</h3>
-      <div class="card-price">Rp 3.000</div>
-    </div>
-  </div>
 
-  <div class="card-product" onclick="openModal('Nokos OVO', 'Nomor Kosong / OTP Instan Aplikasi OVO', 'Rp 1.600')">
-    <div class="card-image-wrapper">
-      <img src="https://via.placeholder.com/300x300/4c2a86/ffffff?text=OVO" alt="OVO" class="card-img">
-      <span class="badge-game">NOKOS</span>
+    <div class="card-product" onclick="openModal('Nokos OVO', 'Nomor Kosong / OTP Instan Aplikasi OVO', 'Rp 1.600')">
+      <div class="card-image-wrapper">
+        <img src="https://via.placeholder.com/300x300/4c2a86/ffffff?text=OVO" alt="OVO" class="card-img">
+        <span class="badge-game">NOKOS</span>
+      </div>
+      <div class="card-body">
+        <span class="badge-tag">READY</span>
+        <h3 class="card-title">🔹 OVO</h3>
+        <div class="card-price">Rp 1.600</div>
+      </div>
     </div>
-    <div class="card-body">
-      <span class="badge-tag">READY</span>
-      <h3 class="card-title">🔹 OVO</h3>
-      <div class="card-price">Rp 1.600</div>
-    </div>
-  </div>
 
-  <div class="card-product" onclick="openModal('Nokos SeaBank', 'Nomor Kosong / OTP Instan Aplikasi SeaBank', 'Rp 3.000')">
-    <div class="card-image-wrapper">
-      <img src="https://via.placeholder.com/300x300/ff5722/ffffff?text=SeaBank" alt="SeaBank" class="card-img">
-      <span class="badge-game">NOKOS</span>
-    </div>
-    <div class="card-body">
-      <span class="badge-tag">READY</span>
-      <h3 class="card-title">🔹 SeaBank</h3>
-      <div class="card-price">Rp 3.000</div>
+    <div class="card-product" onclick="openModal('Nokos SeaBank', 'Nomor Kosong / OTP Instan Aplikasi SeaBank', 'Rp 3.000')">
+      <div class="card-image-wrapper">
+        <img src="https://via.placeholder.com/300x300/ff5722/ffffff?text=SeaBank" alt="SeaBank" class="card-img">
+        <span class="badge-game">NOKOS</span>
+      </div>
+      <div class="card-body">
+        <span class="badge-tag">READY</span>
+        <h3 class="card-title">🔹 SeaBank</h3>
+        <div class="card-price">Rp 3.000</div>
+      </div>
     </div>
   </div>
 </div>
@@ -449,11 +452,12 @@ function filterCategory(el, catName) {
   el.classList.add("active-cat");
   currentCategory = catName;
   
-  const nokosGrid = document.getElementById("nokos-static-grid");
+  // Kontrol Sembunyikan/Tampilkan Seluruh Bagian Nokos (Judul + Kartu)
+  const nokosSection = document.getElementById("nokos-section");
   if (catName === 'Semua' || catName === 'Nokos') {
-    nokosGrid.style.display = "grid";
+    nokosSection.style.display = "block";
   } else {
-    nokosGrid.style.display = "none";
+    nokosSection.style.display = "none";
   }
 
   renderProducts();
