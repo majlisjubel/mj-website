@@ -125,12 +125,13 @@ header{
 }
 
 .search input{
-  width:90%;
+  width:100%;
   background:none;
   border:none;
   outline:none;
   color:white;
   font-size:15px;
+  box-sizing:border-box;
 }
 
 .categories{
@@ -381,25 +382,14 @@ color:white;
   }
 </style>
 </head>
-
-<script>
-function showProduct(button, text){
-  const product = button.closest(".product");
-  const detail = product.nextElementSibling;
-
-  if(detail && detail.classList.contains("product-detail")){
-    detail.querySelector("p").textContent = text;
-    detail.classList.toggle("show");
-  }
-}
-</script>
+  
   <body>
 
 <div class="container">
 
 <header>
   <img class="logo-img" src="https://raw.githubusercontent.com/oyekrani-sketch/mj-website/69f7daa3eed28454cb5731eaa680edc6a6673915/1790943925043.jpg">
-  <div class="menu">☰</div>
+  
 </header>
 
 <section class="hero">
@@ -417,8 +407,7 @@ function showProduct(button, text){
 </section>
 
 <div class="search">
-  🔍
-  <input placeholder="Cari produk...">
+  🔍 <input id="searchInput" type="text" placeholder="Cari produk...">
 </div>
 <div class="categories">
   <div class="category">Semua</div>
@@ -541,6 +530,46 @@ function showProduct(button, text){
   </div>
 
 </div>
+</div>
 
+<script>
+function showProduct(button, text){
+  const product = button.closest(".product");
+  const detail = product.nextElementSibling;
+
+  if(detail && detail.classList.contains("product-detail")){
+    detail.querySelector("p").textContent = text;
+    detail.classList.toggle("show");
+  }
+}
+
+const searchInput = document.getElementById("searchInput");
+
+searchInput.addEventListener("input", function(){
+  const keyword = this.value.toLowerCase().trim();
+  const products = document.querySelectorAll(".product");
+
+  products.forEach(function(product){
+    const detail = product.nextElementSibling;
+    const text = product.textContent.toLowerCase();
+
+    if(text.includes(keyword)){
+      product.style.display = "";
+
+      if(detail){
+        detail.style.display = detail.classList.contains("show")
+          ? "block"
+          : "none";
+      }
+    }else{
+      product.style.display = "none";
+
+      if(detail){
+        detail.style.display = "none";
+      }
+    }
+  });
+});
+</script>
 </body>
   </html>
