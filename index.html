@@ -18,6 +18,7 @@ body{
     url("https://raw.githubusercontent.com/oyekrani-sketch/mj-website/dc71dc504799d5b16c702470f0767ea4111604ec/file_00000000e9b8821188dab8708a1fda9c.png") center top / cover;
   color:white;
   padding-bottom:100px;
+  font-family: system-ui, -apple-system, sans-serif;
 }
 
 .container{
@@ -122,6 +123,9 @@ header{
   border:1px solid #713c80;
   border-radius:20px;
   color:#888;
+  display:flex;
+  align-items:center;
+  gap:10px;
 }
 
 .search input{
@@ -154,10 +158,11 @@ header{
   border-radius:20px;
   color:#b9afb9;
   font-size:13px;
+  cursor:pointer;
   transition:0.2s;
 }
 
-.category:first-child{
+.category.active-cat, .category:first-child{
   background:rgba(245,91,155,0.15);
   border-color:rgba(245,91,155,0.35);
   color:#f579aa;
@@ -221,6 +226,12 @@ header{
   box-shadow:0 8px 24px rgba(0,0,0,0.18);
   backdrop-filter:blur(8px);
   transition:0.2s;
+  cursor:pointer;
+}
+
+.card:hover{
+  border-color:rgba(245,91,155,0.3);
+  transform:translateY(-2px);
 }
 
 .card b{
@@ -249,12 +260,15 @@ header{
   letter-spacing:-0.3px;
 }
 
+.product-wrapper{
+  margin-bottom:12px;
+}
+
 .product{
   display:flex;
   align-items:center;
   gap:14px;
   padding:15px;
-  margin-bottom:12px;
   border-radius:20px;
   background:rgba(25,22,28,0.88);
   border:1px solid rgba(255,255,255,0.07);
@@ -270,6 +284,7 @@ header{
   border-radius:16px;
   background:linear-gradient(135deg,#60346e,#d95691);
   font-size:27px;
+  flex-shrink:0;
 }
 
 .product h3{
@@ -303,6 +318,11 @@ header{
   font-size:11px;
   font-weight:bold;
   cursor:pointer;
+  transition:0.2s;
+}
+
+.order-btn:hover{
+  background:#e04888;
 }
 
 .bottom{
@@ -318,6 +338,7 @@ header{
   background:#1c1820;
   border:1px solid #37313a;
   border-radius:25px;
+  z-index:99;
 }
 
 .nav{
@@ -325,6 +346,7 @@ header{
   color:#817681;
   font-size:10px;
   padding:7px 10px;
+  cursor:pointer;
 }
 
 .nav div{
@@ -332,7 +354,7 @@ header{
   margin-bottom:4px;
 }
 
-.active{
+.nav.active{
   color:#f05b9b;
 }
 
@@ -343,18 +365,20 @@ header{
   width:55px;
   height:55px;
   border-radius:50%;
-  background:#f05b9b;
+  background:#25d366;
   display:flex;
   align-items:center;
   justify-content:center;
-  font-size:25px;
+  font-size:28px;
   text-decoration:none;
   color:white;
+  box-shadow:0 4px 12px rgba(0,0,0,0.3);
+  z-index:99;
 }
 
 .product-detail{
   display:none;
-  margin-top:10px;
+  margin-top:8px;
   padding:15px;
   border-radius:18px;
   background:rgba(25,22,28,0.95);
@@ -376,7 +400,7 @@ header{
   display:inline-block;
   padding:9px 13px;
   border-radius:12px;
-  background:#f05b9b;
+  background:#25d366;
   color:white;
   text-decoration:none;
   font-size:11px;
@@ -390,7 +414,7 @@ header{
 <div class="container">
 
 <header>
-  <img class="logo-img" src="https://raw.githubusercontent.com/oyekrani-sketch/mj-website/69f7daa3eed28454cb5731eaa680edc6a6673915/1790943925043.jpg">
+  <img class="logo-img" src="https://raw.githubusercontent.com/oyekrani-sketch/mj-website/69f7daa3eed28454cb5731eaa680edc6a6673915/1790943925043.jpg" alt="Majlis Jubel Logo">
 </header>
 
 <section class="hero">
@@ -406,18 +430,19 @@ header{
 </section>
 
 <div class="search">
-  🔍 <input id="searchInput" type="text" placeholder="Cari produk...">
+  <span>🔍</span>
+  <input id="searchInput" type="text" placeholder="Cari produk...">
 </div>
 
 <div class="categories">
-  <div class="category">Semua</div>
-  <div class="category">Akun Game</div>
-  <div class="category">Roblox</div>
-  <div class="category">MLBB</div>
-  <div class="category">Email Fresh</div>
-  <div class="category">Nomor Virtual</div>
-  <div class="category">Top Up</div>
-  <div class="category">Layanan Digital</div>
+  <div class="category active-cat" onclick="filterCategory(this, 'Semua')">Semua</div>
+  <div class="category" onclick="filterCategory(this, 'Akun Game')">Akun Game</div>
+  <div class="category" onclick="filterCategory(this, 'Roblox')">Roblox</div>
+  <div class="category" onclick="filterCategory(this, 'MLBB')">MLBB</div>
+  <div class="category" onclick="filterCategory(this, 'Email Fresh')">Email Fresh</div>
+  <div class="category" onclick="filterCategory(this, 'Nomor Virtual')">Nomor Virtual</div>
+  <div class="category" onclick="filterCategory(this, 'Top Up')">Top Up</div>
+  <div class="category" onclick="filterCategory(this, 'Layanan Digital')">Layanan Digital</div>
 </div>
 
 <div class="hot">
@@ -426,19 +451,19 @@ header{
 </div>
 
 <div class="grid">
-  <div class="card">
+  <div class="card" onclick="quickFilter('Akun Game')">
     <div class="emoji">🎮</div>
     <b>Akun Game</b>
   </div>
-  <div class="card">
+  <div class="card" onclick="quickFilter('Email Fresh')">
     <div class="emoji">📧</div>
     <b>Email Baru</b>
   </div>
-  <div class="card">
+  <div class="card" onclick="quickFilter('Nomor Virtual')">
     <div class="emoji">📱</div>
     <b>Nomor Virtual</b>
   </div>
-  <div class="card">
+  <div class="card" onclick="quickFilter('Top Up')">
     <div class="emoji">💎</div>
     <b>Top Up Game</b>
   </div>
@@ -448,54 +473,64 @@ header{
   <h2>Produk Terbaru</h2>
   <div id="supabaseProducts"></div>
 
-  <div class="product">
-    <div class="product-icon">🎮</div>
-    <div class="product-info">
-      <h3>Akun Game</h3>
-      <p>Roblox & MLBB</p>
-      <strong>Mulai dari Rp10.000</strong>
+  <!-- Manual Products List -->
+  <div class="product-wrapper" data-category="Akun Game Roblox MLBB">
+    <div class="product">
+      <div class="product-icon">🎮</div>
+      <div class="product-info">
+        <h3>Akun Game</h3>
+        <p>Roblox & MLBB</p>
+        <strong>Mulai dari Rp10.000</strong>
+      </div>
+      <button class="order-btn" onclick="showProduct(this,'Akun game Roblox dan MLBB. Stok dan harga dapat dikonfirmasi melalui WhatsApp MJ.')">Lihat</button>
     </div>
-    <button class="order-btn" onclick="showProduct(this,'Akun game Roblox dan MLBB. Stok dan harga dapat dikonfirmasi melalui WhatsApp MJ.')">Lihat</button>
+    <div class="product-detail"><p></p></div>
   </div>
-  <div class="product-detail"><p></p></div>
 
-  <div class="product">
-    <div class="product-icon">📧</div>
-    <div class="product-info">
-      <h3>Email Baru</h3>
-      <p>Email baru untuk kebutuhan digital</p>
-      <strong>Mulai dari Rp5.000</strong>
+  <div class="product-wrapper" data-category="Email Fresh Email Baru">
+    <div class="product">
+      <div class="product-icon">📧</div>
+      <div class="product-info">
+        <h3>Email Baru</h3>
+        <p>Email baru untuk kebutuhan digital</p>
+        <strong>Mulai dari Rp5.000</strong>
+      </div>
+      <button class="order-btn" onclick="showProduct(this,'Email baru untuk kebutuhan digital. Stok dan harga dapat dikonfirmasi melalui WhatsApp MJ.')">Lihat</button>
     </div>
-    <button class="order-btn" onclick="showProduct(this,'Email baru untuk kebutuhan digital. Stok dan harga dapat dikonfirmasi melalui WhatsApp MJ.')">Lihat</button>
+    <div class="product-detail"><p></p></div>
   </div>
-  <div class="product-detail"><p></p></div>
 
-  <div class="product">
-    <div class="product-icon">📱</div>
-    <div class="product-info">
-      <h3>Nomor Virtual</h3>
-      <p>Untuk penggunaan yang sesuai</p>
-      <strong>Cek stok</strong>
+  <div class="product-wrapper" data-category="Nomor Virtual">
+    <div class="product">
+      <div class="product-icon">📱</div>
+      <div class="product-info">
+        <h3>Nomor Virtual</h3>
+        <p>Untuk penggunaan yang sesuai</p>
+        <strong>Cek stok</strong>
+      </div>
+      <button class="order-btn" onclick="showProduct(this,'Nomor virtual untuk penggunaan yang sesuai. Stok dan harga dapat dikonfirmasi melalui WhatsApp MJ.')">Lihat</button>
     </div>
-    <button class="order-btn" onclick="showProduct(this,'Nomor virtual untuk penggunaan yang sesuai. Stok dan harga dapat dikonfirmasi melalui WhatsApp MJ.')">Lihat</button>
+    <div class="product-detail"><p></p></div>
   </div>
-  <div class="product-detail"><p></p></div>
 
-  <div class="product">
-    <div class="product-icon">💎</div>
-    <div class="product-info">
-      <h3>Top Up Game</h3>
-      <p>Roblox & MLBB</p>
-      <strong>Harga terjangkau</strong>
+  <div class="product-wrapper" data-category="Top Up Roblox MLBB">
+    <div class="product">
+      <div class="product-icon">💎</div>
+      <div class="product-info">
+        <h3>Top Up Game</h3>
+        <p>Roblox & MLBB</p>
+        <strong>Harga terjangkau</strong>
+      </div>
+      <button class="order-btn" onclick="showProduct(this,'Top Up Game Roblox dan MLBB. Harga dan ketersediaan dapat dikonfirmasi melalui WhatsApp MJ.')">Lihat</button>
     </div>
-    <button class="order-btn" onclick="showProduct(this,'Top Up Game Roblox dan MLBB. Harga dan ketersediaan dapat dikonfirmasi melalui WhatsApp MJ.')">Lihat</button>
+    <div class="product-detail"><p></p></div>
   </div>
-  <div class="product-detail"><p></p></div>
+
 </section>
 
 </div>
 
-<a class="whatsapp" href="https://wa.me/6285179807522" target="_blank">☏</a>
+<a class="whatsapp" href="https://wa.me/6285179807522" target="_blank" title="Chat WhatsApp">💬</a>
 
 <div class="bottom">
   <div class="nav active"><div>⌂</div>Beranda</div>
@@ -507,42 +542,67 @@ header{
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <script>
-// Fungsi toggle detail produk
-function showProduct(button, text){
-  const product = button.closest(".product");
-  const detail = product.nextElementSibling;
+let currentCategory = 'Semua';
 
-  if(detail && detail.classList.contains("product-detail")){
-    detail.querySelector("p").textContent = text;
-    detail.classList.toggle("show");
+// Toggle detail produk
+function showProduct(button, text){
+  const wrapper = button.closest(".product-wrapper") || button.closest(".product").parentElement;
+  const detail = wrapper.querySelector(".product-detail");
+
+  if(detail){
+    const isShowing = detail.classList.contains("show");
+    
+    // Sembunyikan semua detail terbuka lainnya
+    document.querySelectorAll('.product-detail.show').forEach(el => el.classList.remove('show'));
+
+    if(!isShowing){
+      detail.querySelector("p").innerHTML = text + `<br><br><a class="detail-btn" href="https://wa.me/6285179807522?text=Halo%20Admin,%20saya%20tertarik%20dengan%20produk%20ini" target="_blank">Beli via WhatsApp</a>`;
+      detail.classList.add("show");
+    }
   }
 }
 
-// Fitur pencarian produk
-const searchInput = document.getElementById("searchInput");
-searchInput.addEventListener("input", function(){
-  const keyword = this.value.toLowerCase().trim();
-  const products = document.querySelectorAll(".product");
+// Fungsi Pencarian & Filter
+function filterProducts() {
+  const keyword = document.getElementById("searchInput").value.toLowerCase().trim();
+  const wrappers = document.querySelectorAll(".product-wrapper");
 
-  products.forEach(function(product){
-    const detail = product.nextElementSibling;
-    const text = product.textContent.toLowerCase();
+  wrappers.forEach(wrapper => {
+    const text = wrapper.textContent.toLowerCase();
+    const categoryAttr = (wrapper.getAttribute("data-category") || "").toLowerCase();
 
-    if(keyword === "" || text.includes(keyword)){
-      product.style.display = "flex";
-      if(detail){
-        detail.style.display = detail.classList.contains("show") ? "block" : "none";
-      }
-    }else{
-      product.style.display = "none";
-      if(detail){
-        detail.style.display = "none";
-      }
+    const matchesSearch = keyword === "" || text.includes(keyword);
+    const matchesCategory = currentCategory === "Semua" || 
+                            categoryAttr.includes(currentCategory.toLowerCase()) || 
+                            text.includes(currentCategory.toLowerCase());
+
+    if(matchesSearch && matchesCategory){
+      wrapper.style.display = "block";
+    } else {
+      wrapper.style.display = "none";
     }
   });
-});
+}
 
-// Memuat data Supabase setelah DOM siap
+document.getElementById("searchInput").addEventListener("input", filterProducts);
+
+function filterCategory(el, categoryName){
+  document.querySelectorAll(".category").forEach(cat => cat.classList.remove("active-cat"));
+  el.classList.add("active-cat");
+  currentCategory = categoryName;
+  filterProducts();
+}
+
+function quickFilter(categoryName){
+  const categories = document.querySelectorAll(".category");
+  categories.forEach(cat => {
+    if(cat.textContent.trim().toLowerCase() === categoryName.toLowerCase()){
+      cat.click();
+    }
+  });
+}
+
+// Memuat data Supabase
 document.addEventListener("DOMContentLoaded", function () {
   const SUPABASE_URL = "https://sgadlmoskhfyyksobggk.supabase.co";
   const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNnYWRsbW9za2hmeXlrc29iZ2drIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTA5NzcxNzksImV4cCI6MjEwNjU1MzE3OX0.XASgEjWt-PEK0jsFAkncDGfQ7Tu8JHDtW3eHIqn0mwk";
@@ -560,12 +620,12 @@ document.addEventListener("DOMContentLoaded", function () {
 
       if (error) {
         console.error("Supabase error:", error);
-        container.innerHTML = `<p style='color:#ff6b99;padding:15px'>ERROR: ${error.message}</p>`;
+        container.innerHTML = `<p style='color:#ff6b99;padding:15px'>Gagal memuat produk dari database.</p>`;
         return;
       }
 
       if (!data || data.length === 0) {
-        container.innerHTML = "<p style='color:#f579aa;padding:15px'>Data masuk: 0 produk</p>";
+        container.innerHTML = "";
         return;
       }
 
@@ -579,20 +639,25 @@ document.addEventListener("DOMContentLoaded", function () {
           .replace(/\n/g, " ");
 
         return `
-          <div class="product">
-            <div class="product-icon">🎮</div>
-            <div class="product-info">
-              <h3>${name}</h3>
-              <p>${category}</p>
-              <strong>Rp${price}</strong>
+          <div class="product-wrapper" data-category="${category}">
+            <div class="product">
+              <div class="product-icon">🎮</div>
+              <div class="product-info">
+                <h3>${name}</h3>
+                <p>${category}</p>
+                <strong>Rp${price}</strong>
+              </div>
+              <button class="order-btn" onclick="showProduct(this, '${safeDesc}')">Lihat</button>
             </div>
-            <button class="order-btn" onclick="showProduct(this, '${safeDesc}')">Lihat</button>
-          </div>
-          <div class="product-detail">
-            <p></p>
+            <div class="product-detail">
+              <p></p>
+            </div>
           </div>
         `;
       }).join("");
+
+      // Re-apply filter jika ada pencarian aktif
+      filterProducts();
 
     } catch (err) {
       console.error(err);
