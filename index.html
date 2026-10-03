@@ -333,7 +333,7 @@ header{
 </div>
 
 <!-- SECTION PRODUK DARI DATABASE SUPABASE -->
-<div class="section-title">PRODUK DARI SUPABASE</div>
+<div class="section-title">PRODUK LAINNYA</div>
 
 <div id="product-container" class="product-grid">
   <p style="color:#aaa; padding: 10px; grid-column: 1/-1;">Memuat produk...</p>
@@ -379,6 +379,101 @@ async function loadProducts() {
     renderProducts();
 
   } catch (err) {
+    console.error(err);
+  }
+}
+
+function renderProducts() {
+  const container = document.getElementById("product-container");
+  const keyword = document.getElementById("searchInput").value.toLowerCase();
+
+  const filtered = allProducts.filter(p => {
+    const name = (p.name || "").toLowerCase();
+    const cat = (p.category || "").toLowerCase();
+    const desc = (p.description || "").toLowerCase();
+    
+    const matchesSearch = name.includes(keyword) || cat.includes(keyword) || desc.includes(keyword);
+    const matchesCat = (currentCategory === "Semua") || cat.includes(currentCategory.toLowerCase()) || name.includes(currentCategory.toLowerCase());
+
+    return matchesSearch && matchesCat;
+  });
+
+  if (filtered.length === 0) {
+    container.innerHTML = `<p style="color:#aaa; grid-column: 1/-1; text-align:center; padding:20px;">Tidak ada produk ditemukan.</p>`;
+    return;
+  }
+
+  container.innerHTML = filtered.map(p => {
+    const name = p.name || "Produk Tanpa Nama";
+    const category = p.category || "PRODUK";
+    
+    let priceDisplay = "Cek Stok";
+    if (p.price && Number(p.price) > 0) {
+      priceDisplay = "Rp " + Number(p.price).toLocaleString("id-ID");
+    }
+
+    const imgUrl = (p.image_url && p.image_url.trim() !== "") 
+      ? p.image_url 
+      : "https://via.placeholder.com/300x300/251e2b/ffffff?text=MJ+MARKET";
+
+    const desc = (p.description || "Belum ada deskripsi").replace(/'/g, "\\'");
+
+    return `
+      <div class="card-product" onclick="openModal('${name}', '${desc}', '${priceDisplay}')">
+        <div class="card-image-wrapper">
+          <img src="${imgUrl}" alt="${name}" class="card-img">
+          <span class="badge-game">${category}</span>
+        </div>
+        <div class="card-body">
+          <span class="badge-tag">READY</span>
+          <h3 class="card-title">${name}</h3>
+          <div class="card-price">${priceDisplay}</div>
+        </div>
+      </div>
+    `;
+  }).join("");
+}
+
+// Modal Popup Control
+function openModal(title, desc, price) {
+  document.getElementById("modalTitle").innerText = title;
+  document.getElementById("modalDesc").innerText = desc + "\n\nHarga: " + price;
+  
+  // Format pesan WhatsApp yang netral untuk semua jenis produk
+  const textWa = encodeURIComponent(`Halo Admin Majlis Jubel 👋, saya mau order produk berikut:\n\n🔹 Layanan: ${title}\n💰 Harga: ${price}\n\nApakah stoknya ready? Mohon diproses ya, terima kasih!`);
+  document.getElementById("modalWaBtn").href = `https://wa.me/6285179807522?text=${textWa}`;
+  
+  document.getElementById("detailModal").style.display = "flex";
+}
+
+function closeModal() {
+  document.getElementById("detailModal").style.display = "none";
+}
+
+// Filter Search & Category
+document.getElementById("searchInput").addEventListener("input", renderProducts);
+
+function filterCategory(el, catName) {
+  document.querySelectorAll(".category").forEach(c => c.classList.remove("active-cat"));
+  el.classList.add("active-cat");
+  currentCategory = catName;
+  
+  // Sembunyikan/tampilkan list Nokos statis sesuai filter
+  const nokosGrid = document.getElementById("nokos-static-grid");
+  if (catName === 'Semua' || catName === 'Nokos') {
+    nokosGrid.style.display = "grid";
+  } else {
+    nokosGrid.style.display = "none";
+  }
+
+  renderProducts();
+}
+
+document.addEventListener("DOMContentLoaded", loadProducts);
+</script>
+</body>
+</html>
+err) {
     console.error(err);
   }
 }
