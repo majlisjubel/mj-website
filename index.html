@@ -31,6 +31,7 @@ header{
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: 10px;
   background: rgba(28,24,32,0.65);
   border: 1px solid rgba(255,255,255,0.08);
   border-radius: 22px;
@@ -38,10 +39,48 @@ header{
 }
 
 .logo-img{
-  width: 90px;
-  height: 90px;
+  width: 75px;
+  height: 75px;
   object-fit: contain;
   border-radius: 14px;
+  flex-shrink: 0;
+}
+
+.header-links {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  width: 100%;
+}
+
+.header-btn {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  padding: 6px 10px;
+  border-radius: 10px;
+  color: #fff;
+  text-decoration: none;
+  font-size: 11px;
+  font-weight: 600;
+  transition: all 0.2s;
+}
+
+.header-btn:hover {
+  background: rgba(240, 91, 155, 0.2);
+  border-color: #f05b9b;
+  color: #f05b9b;
+}
+
+.header-btn .btn-tag {
+  font-size: 9px;
+  padding: 2px 5px;
+  border-radius: 4px;
+  background: #25d366;
+  color: #000;
+  font-weight: bold;
 }
 
 .search{
@@ -256,6 +295,21 @@ header{
 
 <header>
   <img class="logo-img" src="https://raw.githubusercontent.com/oyekrani-sketch/mj-website/69f7daa3eed28454cb5731eaa680edc6a6673915/1790943925043.jpg" alt="Majlis Jubel Logo">
+  
+  <div class="header-links">
+    <a href="https://chat.whatsapp.com/DtjI7EGXUBqIIisy0bPIIZ" target="_blank" class="header-btn">
+      <span>👥 Group GB WA</span>
+      <span class="btn-tag">JOIN</span>
+    </a>
+    <a href="https://whatsapp.com/channel/0029Vb8MLHCHLHQgH3KTTV0K" target="_blank" class="header-btn">
+      <span>📢 Saluran Stok</span>
+      <span class="btn-tag">CEK</span>
+    </a>
+    <a href="https://whatsapp.com/channel/0029VbDRClmG8l5Clsknh53W" target="_blank" class="header-btn">
+      <span>⭐ Saluran Testimoni</span>
+      <span class="btn-tag">TESTI</span>
+    </a>
+  </div>
 </header>
 
 <div class="search">
@@ -273,9 +327,7 @@ header{
 
 <div id="nokos-section">
   <div class="section-title">📱 LIST HARGA NOKOS</div>
-  <div id="nokos-grid" class="product-grid">
-    <!-- Item Nokos akan dimasukkan via JavaScript agar ikut terfilter otomatis -->
-  </div>
+  <div id="nokos-grid" class="product-grid"></div>
 </div>
 
 <div id="other-products-title" class="section-title">PRODUK LAINNYA</div>
@@ -300,7 +352,6 @@ header{
 let allProducts = [];
 let currentCategory = 'Semua';
 
-// Data bawaan untuk List Nokos
 const nokosItems = [
   { name: 'Nokos WhatsApp', desc: 'Nomor Kosong / OTP Instan WhatsApp Fresh', price: 'Rp 6.000', keywords: 'nokos whatsapp wa' },
   { name: 'Nokos Facebook', desc: 'Nomor Kosong / OTP Instan Facebook Fresh', price: 'Rp 1.200', keywords: 'nokos facebook fb' },
@@ -340,13 +391,11 @@ function renderNokos(keyword) {
   const nokosGrid = document.getElementById("nokos-grid");
   const nokosSection = document.getElementById("nokos-section");
 
-  // Jika kategori aktif bukan 'Semua' dan bukan 'Nokos', sembunyikan section
   if (currentCategory !== 'Semua' && currentCategory !== 'Nokos') {
     nokosSection.style.display = "none";
     return;
   }
 
-  // Filter list nokos berdasarkan kata kunci pencarian
   const filteredNokos = nokosItems.filter(item => {
     const text = (item.name + " " + item.desc + " " + item.keywords).toLowerCase();
     return text.includes(keyword);
