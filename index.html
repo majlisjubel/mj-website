@@ -583,22 +583,35 @@ const supabase = window.supabase.createClient(
 </script>
   <script>
 async function loadProducts(){
+
   const { data, error } = await supabase
     .from("products")
     .select("*")
     .order("created_at", { ascending:false });
 
-  if(error){
-  console.error(error);
-  document.getElementById("supabaseProducts").innerHTML =
-    "<p style='color:#ff6b99;padding:15px'>ERROR: " + error.message + "</p>";
-  return;
-}
-
   const container = document.getElementById("supabaseProducts");
+
+  if(error){
+    console.error(error);
+
+    container.innerHTML =
+      "<p style='color:#ff6b99;padding:15px'>ERROR: "
+      + error.message +
+      "</p>";
+
+    return;
+  }
+
+  if(!data || data.length === 0){
+    container.innerHTML =
+      "<p style='color:#f579aa;padding:15px'>Data masuk: 0 produk</p>";
+
+    return;
+  }
 
   container.innerHTML = data.map(product => `
     <div class="product">
+
       <div class="product-icon">🎮</div>
 
       <div class="product-info">
@@ -608,14 +621,16 @@ async function loadProducts(){
       </div>
 
       <button class="order-btn"
-        onclick="showProduct(this,'${product.description}')">
+        onclick="showProduct(this, '${product.description}')">
         Lihat
       </button>
+
     </div>
 
     <div class="product-detail">
       <p></p>
     </div>
+
   `).join("");
 }
 
