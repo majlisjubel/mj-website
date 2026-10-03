@@ -530,7 +530,6 @@ color:white;
   </div>
 
 </div>
-</div>
 
 <script>
 function showProduct(button, text){
@@ -553,8 +552,8 @@ searchInput.addEventListener("input", function(){
     const detail = product.nextElementSibling;
     const text = product.textContent.toLowerCase();
 
-    if(text.includes(keyword)){
-      product.style.display = "";
+    if(keyword === "" || text.includes(keyword)){
+      product.style.display = "flex";
 
       if(detail){
         detail.style.display = detail.classList.contains("show")
