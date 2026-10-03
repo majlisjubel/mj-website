@@ -91,12 +91,13 @@ header{
 }
 
 .section-title{
-  margin: 10px 18px 14px;
-  font-size: 18px;
+  margin: 16px 18px 14px;
+  font-size: 16px;
   font-weight: bold;
+  letter-spacing: 0.5px;
 }
 
-/* TAMPILAN GRID KARTU KECIL (PERSIS CONTOH WEB JB) */
+/* TAMPILAN GRID KARTU KECIL */
 .product-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr); /* 2 Kolom Sejajar di HP */
@@ -254,12 +255,88 @@ header{
   <div class="category" onclick="filterCategory(this, 'Roblox')">Roblox</div>
 </div>
 
+<!-- SECTION DAFTAR HARGA NOKOS INSTAN -->
+<div class="section-title">📱 LIST HARGA NOKOS</div>
 
-<div class="section-title">PRODUK TERBARU</div>
+<div class="product-grid" id="nokos-static-grid">
+  <div class="card-product" onclick="openModal('Nokos WhatsApp', 'Nomor Kosong / OTP Instan WhatsApp Fresh', 'Rp 6.000')">
+    <div class="card-image-wrapper">
+      <img src="https://via.placeholder.com/300x300/25d366/ffffff?text=WhatsApp" alt="WhatsApp" class="card-img">
+      <span class="badge-game">NOKOS</span>
+    </div>
+    <div class="card-body">
+      <span class="badge-tag">READY</span>
+      <h3 class="card-title">🔹 WhatsApp</h3>
+      <div class="card-price">Rp 6.000</div>
+    </div>
+  </div>
 
-<!-- GRID PRODUK KARTU -->
+  <div class="card-product" onclick="openModal('Nokos Facebook', 'Nomor Kosong / OTP Instan Facebook Fresh', 'Rp 1.200')">
+    <div class="card-image-wrapper">
+      <img src="https://via.placeholder.com/300x300/1877f2/ffffff?text=Facebook" alt="Facebook" class="card-img">
+      <span class="badge-game">NOKOS</span>
+    </div>
+    <div class="card-body">
+      <span class="badge-tag">READY</span>
+      <h3 class="card-title">🔹 Facebook</h3>
+      <div class="card-price">Rp 1.200</div>
+    </div>
+  </div>
+
+  <div class="card-product" onclick="openModal('Nokos Google / Gmail / YouTube', 'Nomor Kosong / OTP Instan Google, Gmail, dan YouTube', 'Rp 1.200')">
+    <div class="card-image-wrapper">
+      <img src="https://via.placeholder.com/300x300/ea4335/ffffff?text=Google" alt="Google" class="card-img">
+      <span class="badge-game">NOKOS</span>
+    </div>
+    <div class="card-body">
+      <span class="badge-tag">READY</span>
+      <h3 class="card-title">🔹 Google / Gmail / YT</h3>
+      <div class="card-price">Rp 1.200</div>
+    </div>
+  </div>
+
+  <div class="card-product" onclick="openModal('Nokos DANA', 'Nomor Kosong / OTP Instan Aplikasi DANA', 'Rp 3.000')">
+    <div class="card-image-wrapper">
+      <img src="https://via.placeholder.com/300x300/118eea/ffffff?text=DANA" alt="DANA" class="card-img">
+      <span class="badge-game">NOKOS</span>
+    </div>
+    <div class="card-body">
+      <span class="badge-tag">READY</span>
+      <h3 class="card-title">🔹 DANA</h3>
+      <div class="card-price">Rp 3.000</div>
+    </div>
+  </div>
+
+  <div class="card-product" onclick="openModal('Nokos OVO', 'Nomor Kosong / OTP Instan Aplikasi OVO', 'Rp 1.600')">
+    <div class="card-image-wrapper">
+      <img src="https://via.placeholder.com/300x300/4c2a86/ffffff?text=OVO" alt="OVO" class="card-img">
+      <span class="badge-game">NOKOS</span>
+    </div>
+    <div class="card-body">
+      <span class="badge-tag">READY</span>
+      <h3 class="card-title">🔹 OVO</h3>
+      <div class="card-price">Rp 1.600</div>
+    </div>
+  </div>
+
+  <div class="card-product" onclick="openModal('Nokos SeaBank', 'Nomor Kosong / OTP Instan Aplikasi SeaBank', 'Rp 3.000')">
+    <div class="card-image-wrapper">
+      <img src="https://via.placeholder.com/300x300/ff5722/ffffff?text=SeaBank" alt="SeaBank" class="card-img">
+      <span class="badge-game">NOKOS</span>
+    </div>
+    <div class="card-body">
+      <span class="badge-tag">READY</span>
+      <h3 class="card-title">🔹 SeaBank</h3>
+      <div class="card-price">Rp 3.000</div>
+    </div>
+  </div>
+</div>
+
+<!-- SECTION PRODUK DARI DATABASE SUPABASE -->
+<div class="section-title">PRODUK DARI SUPABASE</div>
+
 <div id="product-container" class="product-grid">
-  <p style="color:#aaa; padding: 10px;">Memuat produk...</p>
+  <p style="color:#aaa; padding: 10px; grid-column: 1/-1;">Memuat produk...</p>
 </div>
 
 </div>
@@ -294,7 +371,7 @@ async function loadProducts() {
       .order("id", { ascending: false });
 
     if (error || !data) {
-      container.innerHTML = `<p style="color:#ff6b99;padding:10px">Gagal memuat produk.</p>`;
+      container.innerHTML = `<p style="color:#ff6b99;padding:10px; grid-column: 1/-1;">Gagal memuat produk dari database.</p>`;
       return;
     }
 
@@ -315,17 +392,14 @@ function renderProducts() {
     const cat = (p.category || "").toLowerCase();
     const desc = (p.description || "").toLowerCase();
     
-    // Pencarian mencakup Nama, Kategori, dan Deskripsi
     const matchesSearch = name.includes(keyword) || cat.includes(keyword) || desc.includes(keyword);
-    
-    // Filter Kategori
     const matchesCat = (currentCategory === "Semua") || cat.includes(currentCategory.toLowerCase()) || name.includes(currentCategory.toLowerCase());
 
     return matchesSearch && matchesCat;
   });
 
   if (filtered.length === 0) {
-    container.innerHTML = `<p style="color:#aaa; grid-column: 1/-1; text-align:center; padding:20px;">Produk tidak ditemukan.</p>`;
+    container.innerHTML = `<p style="color:#aaa; grid-column: 1/-1; text-align:center; padding:20px;">Tidak ada produk tambahan.</p>`;
     return;
   }
 
@@ -333,13 +407,11 @@ function renderProducts() {
     const name = p.name || "Produk Tanpa Nama";
     const category = p.category || "PRODUK";
     
-    // Format Harga
     let priceDisplay = "Cek Stok";
     if (p.price && Number(p.price) > 0) {
       priceDisplay = "Rp " + Number(p.price).toLocaleString("id-ID");
     }
 
-    // Gambar Produk (Pakai default jika tidak ada gambar)
     const imgUrl = (p.image_url && p.image_url.trim() !== "") 
       ? p.image_url 
       : "https://via.placeholder.com/300x300/251e2b/ffffff?text=MJ+MARKET";
@@ -362,13 +434,12 @@ function renderProducts() {
   }).join("");
 }
 
-
 // Modal Popup Control
 function openModal(title, desc, price) {
   document.getElementById("modalTitle").innerText = title;
-  document.getElementById("modalDesc").innerText = desc + " - Harga: " + price;
+  document.getElementById("modalDesc").innerText = desc + "\n\nHarga: " + price;
   
-  const textWa = encodeURIComponent(`Halo Admin, saya berminat membeli produk: ${title} (${price})`);
+  const textWa = encodeURIComponent(`Halo Admin Majlis Jubel 👋, saya mau order Nokos:\n\n📌 Layanan: ${title}\n💰 Harga: ${price}\n\nApakah stoknya ready? Mohon diproses ya, terima kasih!`);
   document.getElementById("modalWaBtn").href = `https://wa.me/6285179807522?text=${textWa}`;
   
   document.getElementById("detailModal").style.display = "flex";
@@ -378,13 +449,22 @@ function closeModal() {
   document.getElementById("detailModal").style.display = "none";
 }
 
-// Filter
+// Filter Search & Category
 document.getElementById("searchInput").addEventListener("input", renderProducts);
 
 function filterCategory(el, catName) {
   document.querySelectorAll(".category").forEach(c => c.classList.remove("active-cat"));
   el.classList.add("active-cat");
   currentCategory = catName;
+  
+  // Sembunyikan/tampilkan list Nokos statis sesuai filter
+  const nokosGrid = document.getElementById("nokos-static-grid");
+  if (catName === 'Semua' || catName === 'Nokos') {
+    nokosGrid.style.display = "grid";
+  } else {
+    nokosGrid.style.display = "none";
+  }
+
   renderProducts();
 }
 
