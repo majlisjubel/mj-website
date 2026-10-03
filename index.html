@@ -163,20 +163,45 @@ header{
 }
 
 .hot{
-  margin:0 18px 18px;
-  padding:20px;
-  border-radius:22px;
-  background:linear-gradient(135deg,#251c25,#30202e);
-  border:1px solid #382b39;
+  margin:0 18px 20px;
+  padding:22px;
+  border-radius:24px;
+  background:
+    linear-gradient(
+      135deg,
+      rgba(38,27,38,0.92),
+      rgba(48,32,46,0.78)
+    );
+  border:1px solid rgba(245,91,155,0.18);
+  box-shadow:0 10px 30px rgba(0,0,0,0.20);
+  backdrop-filter:blur(10px);
+  position:relative;
+  overflow:hidden;
+}
+
+.hot::after{
+  content:"";
+  position:absolute;
+  width:120px;
+  height:120px;
+  right:-45px;
+  top:-45px;
+  background:rgba(245,91,155,0.12);
+  border-radius:50%;
+  filter:blur(5px);
 }
 
 .hot small{
-  color:#ff608e;
-  font-weight:bold;
+  color:#ff6b99;
+  font-size:11px;
+  font-weight:800;
+  letter-spacing:1px;
 }
 
 .hot h2{
-  margin-top:8px;
+  margin-top:9px;
+  font-size:21px;
+  letter-spacing:-0.3px;
 }
 
 .grid{
@@ -325,9 +350,9 @@ header{
 </div>
 
 <div class="hot">
-  <small>🔥 TERPOPULER</small>
-  <h2>Produk & Promo MJ</h2>
-</div>
+  <small>🔥 PRODUK TERPOPULER</small>
+  <h2>Belanja Produk Digital MJ</h2>
+</div>>
 
 <div class="grid">
 
