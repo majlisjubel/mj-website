@@ -580,5 +580,18 @@ const supabase = window.supabase.createClient(
   SUPABASE_URL,
   SUPABASE_KEY
 );
-</script></body>
+</script>
+  <script>
+async function testSupabase(){
+  const { data, error } = await supabase
+    .from("products")
+    .select("*");
+
+  console.log(data);
+  console.log(error);
+}
+
+testSupabase();
+  </script>
+  </body>
   </html>
