@@ -97,10 +97,9 @@ header{
   letter-spacing: 0.5px;
 }
 
-/* TAMPILAN GRID KARTU KECIL */
 .product-grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr); /* 2 Kolom Sejajar di HP */
+  grid-template-columns: repeat(2, 1fr);
   gap: 12px;
   padding: 0 18px;
 }
@@ -124,7 +123,7 @@ header{
 .card-image-wrapper {
   position: relative;
   width: 100%;
-  padding-top: 100%; /* Kotak Rasio Persegi 1:1 */
+  padding-top: 100%;
   background: #251e2b;
 }
 
@@ -188,7 +187,6 @@ header{
   margin-top: auto;
 }
 
-/* MODAL DETAIL POPUP */
 .modal{
   display: none;
   position: fixed;
@@ -255,7 +253,6 @@ header{
   <div class="category" onclick="filterCategory(this, 'Roblox')">Roblox</div>
 </div>
 
-<!-- SECTION DAFTAR HARGA NOKOS INSTAN -->
 <div class="section-title">📱 LIST HARGA NOKOS</div>
 
 <div class="product-grid" id="nokos-static-grid">
@@ -332,7 +329,6 @@ header{
   </div>
 </div>
 
-<!-- SECTION PRODUK DARI DATABASE SUPABASE -->
 <div class="section-title">PRODUK LAINNYA</div>
 
 <div id="product-container" class="product-grid">
@@ -341,7 +337,6 @@ header{
 
 </div>
 
-<!-- MODAL BOX SAAT KARTU DIKLIK -->
 <div id="detailModal" class="modal">
   <div class="modal-content">
     <h3 id="modalTitle">Detail Produk</h3>
@@ -356,7 +351,6 @@ header{
 let allProducts = [];
 let currentCategory = 'Semua';
 
-// Inisialisasi Supabase
 const SUPABASE_URL = "https://sgadlmoskhfyyksobggk.supabase.co";
 const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNnYWRsbW9za2hmeXlrc29iZ2drIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTA5NzcxNzksImV4cCI6MjEwNjU1MzE3OX0.XASgEjWt-PEK0jsFAkncDGfQ7Tu8JHDtW3eHIqn0mwk";
 const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
@@ -371,7 +365,7 @@ async function loadProducts() {
       .order("id", { ascending: false });
 
     if (error || !data) {
-      container.innerHTML = `<p style="color:#ff6b99;padding:10px; grid-column: 1/-1;">Gagal memuat produk dari database.</p>`;
+      container.innerHTML = '<p style="color:#ff6b99;padding:10px; grid-column: 1/-1;">Gagal memuat produk dari database.</p>';
       return;
     }
 
@@ -399,7 +393,7 @@ function renderProducts() {
   });
 
   if (filtered.length === 0) {
-    container.innerHTML = `<p style="color:#aaa; grid-column: 1/-1; text-align:center; padding:20px;">Tidak ada produk ditemukan.</p>`;
+    container.innerHTML = '<p style="color:#aaa; grid-column: 1/-1; text-align:center; padding:20px;">Tidak ada produk ditemukan.</p>';
     return;
   }
 
@@ -434,12 +428,10 @@ function renderProducts() {
   }).join("");
 }
 
-// Modal Popup Control
 function openModal(title, desc, price) {
   document.getElementById("modalTitle").innerText = title;
   document.getElementById("modalDesc").innerText = desc + "\n\nHarga: " + price;
   
-  // Format pesan WhatsApp yang netral untuk semua jenis produk
   const textWa = encodeURIComponent(`Halo Admin Majlis Jubel 👋, saya mau order produk berikut:\n\n🔹 Layanan: ${title}\n💰 Harga: ${price}\n\nApakah stoknya ready? Mohon diproses ya, terima kasih!`);
   document.getElementById("modalWaBtn").href = `https://wa.me/6285179807522?text=${textWa}`;
   
@@ -450,7 +442,6 @@ function closeModal() {
   document.getElementById("detailModal").style.display = "none";
 }
 
-// Filter Search & Category
 document.getElementById("searchInput").addEventListener("input", renderProducts);
 
 function filterCategory(el, catName) {
@@ -458,101 +449,6 @@ function filterCategory(el, catName) {
   el.classList.add("active-cat");
   currentCategory = catName;
   
-  // Sembunyikan/tampilkan list Nokos statis sesuai filter
-  const nokosGrid = document.getElementById("nokos-static-grid");
-  if (catName === 'Semua' || catName === 'Nokos') {
-    nokosGrid.style.display = "grid";
-  } else {
-    nokosGrid.style.display = "none";
-  }
-
-  renderProducts();
-}
-
-document.addEventListener("DOMContentLoaded", loadProducts);
-</script>
-</body>
-</html>
-err) {
-    console.error(err);
-  }
-}
-
-function renderProducts() {
-  const container = document.getElementById("product-container");
-  const keyword = document.getElementById("searchInput").value.toLowerCase();
-
-  const filtered = allProducts.filter(p => {
-    const name = (p.name || "").toLowerCase();
-    const cat = (p.category || "").toLowerCase();
-    const desc = (p.description || "").toLowerCase();
-    
-    const matchesSearch = name.includes(keyword) || cat.includes(keyword) || desc.includes(keyword);
-    const matchesCat = (currentCategory === "Semua") || cat.includes(currentCategory.toLowerCase()) || name.includes(currentCategory.toLowerCase());
-
-    return matchesSearch && matchesCat;
-  });
-
-  if (filtered.length === 0) {
-    container.innerHTML = `<p style="color:#aaa; grid-column: 1/-1; text-align:center; padding:20px;">Tidak ada produk tambahan.</p>`;
-    return;
-  }
-
-  container.innerHTML = filtered.map(p => {
-    const name = p.name || "Produk Tanpa Nama";
-    const category = p.category || "PRODUK";
-    
-    let priceDisplay = "Cek Stok";
-    if (p.price && Number(p.price) > 0) {
-      priceDisplay = "Rp " + Number(p.price).toLocaleString("id-ID");
-    }
-
-    const imgUrl = (p.image_url && p.image_url.trim() !== "") 
-      ? p.image_url 
-      : "https://via.placeholder.com/300x300/251e2b/ffffff?text=MJ+MARKET";
-
-    const desc = (p.description || "Belum ada deskripsi").replace(/'/g, "\\'");
-
-    return `
-      <div class="card-product" onclick="openModal('${name}', '${desc}', '${priceDisplay}')">
-        <div class="card-image-wrapper">
-          <img src="${imgUrl}" alt="${name}" class="card-img">
-          <span class="badge-game">${category}</span>
-        </div>
-        <div class="card-body">
-          <span class="badge-tag">READY</span>
-          <h3 class="card-title">${name}</h3>
-          <div class="card-price">${priceDisplay}</div>
-        </div>
-      </div>
-    `;
-  }).join("");
-}
-
-// Modal Popup Control
-function openModal(title, desc, price) {
-  document.getElementById("modalTitle").innerText = title;
-  document.getElementById("modalDesc").innerText = desc + "\n\nHarga: " + price;
-  
-  const textWa = encodeURIComponent(`Halo Admin Majlis Jubel 👋, saya mau order Nokos:\n\n📌 Layanan: ${title}\n💰 Harga: ${price}\n\nApakah stoknya ready? Mohon diproses ya, terima kasih!`);
-  document.getElementById("modalWaBtn").href = `https://wa.me/6285179807522?text=${textWa}`;
-  
-  document.getElementById("detailModal").style.display = "flex";
-}
-
-function closeModal() {
-  document.getElementById("detailModal").style.display = "none";
-}
-
-// Filter Search & Category
-document.getElementById("searchInput").addEventListener("input", renderProducts);
-
-function filterCategory(el, catName) {
-  document.querySelectorAll(".category").forEach(c => c.classList.remove("active-cat"));
-  el.classList.add("active-cat");
-  currentCategory = catName;
-  
-  // Sembunyikan/tampilkan list Nokos statis sesuai filter
   const nokosGrid = document.getElementById("nokos-static-grid");
   if (catName === 'Semua' || catName === 'Nokos') {
     nokosGrid.style.display = "grid";
