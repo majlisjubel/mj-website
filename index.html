@@ -273,83 +273,12 @@ header{
 
 <div id="nokos-section">
   <div class="section-title">📱 LIST HARGA NOKOS</div>
-
-  <div class="product-grid">
-    <!-- WHATSAPP -->
-    <div class="card-product" onclick="openModal('Nokos WhatsApp', 'Nomor Kosong / OTP Instan WhatsApp Fresh', 'Rp 6.000')">
-      <div class="card-body">
-        <div class="card-header-badge">
-          <span class="badge-tag">READY</span>
-          <span class="nokos-badge-game">NOKOS</span>
-        </div>
-        <h3 class="card-title">🔹 WhatsApp</h3>
-        <div class="card-price">Rp 6.000</div>
-      </div>
-    </div>
-
-    <!-- FACEBOOK -->
-    <div class="card-product" onclick="openModal('Nokos Facebook', 'Nomor Kosong / OTP Instan Facebook Fresh', 'Rp 1.200')">
-      <div class="card-body">
-        <div class="card-header-badge">
-          <span class="badge-tag">READY</span>
-          <span class="nokos-badge-game">NOKOS</span>
-        </div>
-        <h3 class="card-title">🔹 Facebook</h3>
-        <div class="card-price">Rp 1.200</div>
-      </div>
-    </div>
-
-    <!-- GOOGLE -->
-    <div class="card-product" onclick="openModal('Nokos Google / Gmail / YouTube', 'Nomor Kosong / OTP Instan Google, Gmail, dan YouTube', 'Rp 1.200')">
-      <div class="card-body">
-        <div class="card-header-badge">
-          <span class="badge-tag">READY</span>
-          <span class="nokos-badge-game">NOKOS</span>
-        </div>
-        <h3 class="card-title">🔹 Google / Gmail / YT</h3>
-        <div class="card-price">Rp 1.200</div>
-      </div>
-    </div>
-
-    <!-- DANA -->
-    <div class="card-product" onclick="openModal('Nokos DANA', 'Nomor Kosong / OTP Instan Aplikasi DANA', 'Rp 3.000')">
-      <div class="card-body">
-        <div class="card-header-badge">
-          <span class="badge-tag">READY</span>
-          <span class="nokos-badge-game">NOKOS</span>
-        </div>
-        <h3 class="card-title">🔹 DANA</h3>
-        <div class="card-price">Rp 3.000</div>
-      </div>
-    </div>
-
-    <!-- OVO -->
-    <div class="card-product" onclick="openModal('Nokos OVO', 'Nomor Kosong / OTP Instan Aplikasi OVO', 'Rp 1.600')">
-      <div class="card-body">
-        <div class="card-header-badge">
-          <span class="badge-tag">READY</span>
-          <span class="nokos-badge-game">NOKOS</span>
-        </div>
-        <h3 class="card-title">🔹 OVO</h3>
-        <div class="card-price">Rp 1.600</div>
-      </div>
-    </div>
-
-    <!-- SEABANK -->
-    <div class="card-product" onclick="openModal('Nokos SeaBank', 'Nomor Kosong / OTP Instan Aplikasi SeaBank', 'Rp 3.000')">
-      <div class="card-body">
-        <div class="card-header-badge">
-          <span class="badge-tag">READY</span>
-          <span class="nokos-badge-game">NOKOS</span>
-        </div>
-        <h3 class="card-title">🔹 SeaBank</h3>
-        <div class="card-price">Rp 3.000</div>
-      </div>
-    </div>
+  <div id="nokos-grid" class="product-grid">
+    <!-- Item Nokos akan dimasukkan via JavaScript agar ikut terfilter otomatis -->
   </div>
 </div>
 
-<div class="section-title">PRODUK LAINNYA</div>
+<div id="other-products-title" class="section-title">PRODUK LAINNYA</div>
 
 <div id="product-container" class="product-grid">
   <p style="color:#aaa; padding: 10px; grid-column: 1/-1;">Memuat produk...</p>
@@ -371,6 +300,16 @@ header{
 let allProducts = [];
 let currentCategory = 'Semua';
 
+// Data bawaan untuk List Nokos
+const nokosItems = [
+  { name: 'Nokos WhatsApp', desc: 'Nomor Kosong / OTP Instan WhatsApp Fresh', price: 'Rp 6.000', keywords: 'nokos whatsapp wa' },
+  { name: 'Nokos Facebook', desc: 'Nomor Kosong / OTP Instan Facebook Fresh', price: 'Rp 1.200', keywords: 'nokos facebook fb' },
+  { name: 'Nokos Google / Gmail / YT', desc: 'Nomor Kosong / OTP Instan Google, Gmail, dan YouTube', price: 'Rp 1.200', keywords: 'nokos google gmail youtube yt' },
+  { name: 'Nokos DANA', desc: 'Nomor Kosong / OTP Instan Aplikasi DANA', price: 'Rp 3.000', keywords: 'nokos dana' },
+  { name: 'Nokos OVO', desc: 'Nomor Kosong / OTP Instan Aplikasi OVO', price: 'Rp 1.600', keywords: 'nokos ovo' },
+  { name: 'Nokos SeaBank', desc: 'Nomor Kosong / OTP Instan Aplikasi SeaBank', price: 'Rp 3.000', keywords: 'nokos seabank' }
+];
+
 const SUPABASE_URL = "https://sgadlmoskhfyyksobggk.supabase.co";
 const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNnYWRsbW9za2hmeXlrc29iZ2drIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTA5NzcxNzksImV4cCI6MjEwNjU1MzE3OX0.XASgEjWt-PEK0jsFAkncDGfQ7Tu8JHDtW3eHIqn0mwk";
 const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
@@ -384,22 +323,57 @@ async function loadProducts() {
       .select("*")
       .order("id", { ascending: false });
 
-    if (error || !data) {
+    if (error) {
       container.innerHTML = '<p style="color:#ff6b99;padding:10px; grid-column: 1/-1;">Gagal memuat produk dari database.</p>';
       return;
     }
 
-    allProducts = data;
-    renderProducts();
+    allProducts = data || [];
+    renderAll();
 
   } catch (err) {
     console.error(err);
   }
 }
 
-function renderProducts() {
+function renderNokos(keyword) {
+  const nokosGrid = document.getElementById("nokos-grid");
+  const nokosSection = document.getElementById("nokos-section");
+
+  // Jika kategori aktif bukan 'Semua' dan bukan 'Nokos', sembunyikan section
+  if (currentCategory !== 'Semua' && currentCategory !== 'Nokos') {
+    nokosSection.style.display = "none";
+    return;
+  }
+
+  // Filter list nokos berdasarkan kata kunci pencarian
+  const filteredNokos = nokosItems.filter(item => {
+    const text = (item.name + " " + item.desc + " " + item.keywords).toLowerCase();
+    return text.includes(keyword);
+  });
+
+  if (filteredNokos.length === 0) {
+    nokosSection.style.display = "none";
+  } else {
+    nokosSection.style.display = "block";
+    nokosGrid.innerHTML = filteredNokos.map(item => `
+      <div class="card-product" onclick="openModal('${item.name}', '${item.desc}', '${item.price}')">
+        <div class="card-body">
+          <div class="card-header-badge">
+            <span class="badge-tag">READY</span>
+            <span class="nokos-badge-game">NOKOS</span>
+          </div>
+          <h3 class="card-title">🔹 ${item.name.replace('Nokos ', '')}</h3>
+          <div class="card-price">${item.price}</div>
+        </div>
+      </div>
+    `).join("");
+  }
+}
+
+function renderProducts(keyword) {
   const container = document.getElementById("product-container");
-  const keyword = document.getElementById("searchInput").value.toLowerCase();
+  const titleEl = document.getElementById("other-products-title");
 
   const filtered = allProducts.filter(p => {
     const name = (p.name || "").toLowerCase();
@@ -414,9 +388,11 @@ function renderProducts() {
 
   if (filtered.length === 0) {
     container.innerHTML = '<p style="color:#aaa; grid-column: 1/-1; text-align:center; padding:20px;">Tidak ada produk ditemukan.</p>';
+    titleEl.style.display = "block";
     return;
   }
 
+  titleEl.style.display = "block";
   container.innerHTML = filtered.map(p => {
     const name = p.name || "Produk Tanpa Nama";
     const category = p.category || "PRODUK";
@@ -428,24 +404,42 @@ function renderProducts() {
 
     const imgUrl = (p.image_url && p.image_url.trim() !== "") 
       ? p.image_url 
-      : "https://via.placeholder.com/300x300/251e2b/ffffff?text=MJ+MARKET";
+      : "";
 
     const desc = (p.description || "Belum ada deskripsi").replace(/'/g, "\\'");
 
-    return `
-      <div class="card-product" onclick="openModal('${name}', '${desc}', '${priceDisplay}')">
+    let imageHTML = "";
+    if (imgUrl) {
+      imageHTML = `
         <div class="card-image-wrapper">
           <img src="${imgUrl}" alt="${name}" class="card-img">
           <span class="badge-game">${category}</span>
         </div>
+      `;
+    }
+
+    return `
+      <div class="card-product" onclick="openModal('${name}', '${desc}', '${priceDisplay}')">
+        ${imageHTML}
         <div class="card-body">
-          <span class="badge-tag">READY</span>
+          ${!imgUrl ? `
+            <div class="card-header-badge">
+              <span class="badge-tag">READY</span>
+              <span class="nokos-badge-game">${category}</span>
+            </div>
+          ` : '<span class="badge-tag">READY</span>'}
           <h3 class="card-title">${name}</h3>
           <div class="card-price">${priceDisplay}</div>
         </div>
       </div>
     `;
   }).join("");
+}
+
+function renderAll() {
+  const keyword = document.getElementById("searchInput").value.toLowerCase().trim();
+  renderNokos(keyword);
+  renderProducts(keyword);
 }
 
 function openModal(title, desc, price) {
@@ -462,21 +456,13 @@ function closeModal() {
   document.getElementById("detailModal").style.display = "none";
 }
 
-document.getElementById("searchInput").addEventListener("input", renderProducts);
+document.getElementById("searchInput").addEventListener("input", renderAll);
 
 function filterCategory(el, catName) {
   document.querySelectorAll(".category").forEach(c => c.classList.remove("active-cat"));
   el.classList.add("active-cat");
   currentCategory = catName;
-  
-  const nokosSection = document.getElementById("nokos-section");
-  if (catName === 'Semua' || catName === 'Nokos') {
-    nokosSection.style.display = "block";
-  } else {
-    nokosSection.style.display = "none";
-  }
-
-  renderProducts();
+  renderAll();
 }
 
 document.addEventListener("DOMContentLoaded", loadProducts);
