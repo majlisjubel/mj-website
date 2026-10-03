@@ -136,17 +136,30 @@ header{
 .categories{
   display:flex;
   gap:9px;
-  overflow:auto;
-  padding:0 18px 18px;
+  overflow-x:auto;
+  padding:0 18px 20px;
+  scrollbar-width:none;
+}
+
+.categories::-webkit-scrollbar{
+  display:none;
 }
 
 .category{
   white-space:nowrap;
-  background:#18151b;
-  border:1px solid #302a32;
-  padding:10px 15px;
+  background:rgba(24,21,27,0.82);
+  border:1px solid rgba(255,255,255,0.08);
+  padding:10px 16px;
   border-radius:20px;
-  color:#aaa;
+  color:#b9afb9;
+  font-size:13px;
+  transition:0.2s;
+}
+
+.category:first-child{
+  background:rgba(245,91,155,0.15);
+  border-color:rgba(245,91,155,0.35);
+  color:#f579aa;
 }
 
 .hot{
@@ -300,13 +313,15 @@ header{
   🔍
   <input placeholder="Cari produk...">
 </div>
-
 <div class="categories">
+  <div class="category">Semua</div>
   <div class="category">Akun Game</div>
-  <div class="category">Robux</div>
+  <div class="category">Roblox</div>
   <div class="category">MLBB</div>
-  <div class="category">Free Fire</div>
-  <div class="category">Digital</div>
+  <div class="category">Email Fresh</div>
+  <div class="category">Nomor Virtual</div>
+  <div class="category">Top Up</div>
+  <div class="category">Layanan Digital</div>
 </div>
 
 <div class="hot">
