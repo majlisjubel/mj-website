@@ -379,15 +379,17 @@ header{
   <div class="category" onclick="filterCategory(this, 'Barang Bekas')">Barang Bekas</div>
 </div>
 
-<div id="nokos-section">
-  <div class="section-title">📱 LIST HARGA NOKOS</div>
-  <div id="nokos-grid" class="product-grid"></div>
-</div>
-
-<div id="other-products-title" class="section-title">PRODUK LAINNYA</div>
+<!-- Section PRODUK TERBARU (DiAtas) -->
+<div id="other-products-title" class="section-title">PRODUK TERBARU</div>
 
 <div id="product-container" class="product-grid">
   <p style="color:#aaa; padding: 10px; grid-column: 1/-1;">Memuat produk...</p>
+</div>
+
+<!-- Section LIST HARGA NOKOS (Di Bawah) -->
+<div id="nokos-section" style="margin-top: 24px;">
+  <div class="section-title">📱 LIST HARGA NOKOS</div>
+  <div id="nokos-grid" class="product-grid"></div>
 </div>
 
 </div>
@@ -515,7 +517,7 @@ function renderProducts(keyword) {
     if (imgUrl) {
       imageHTML = `
         <div class="card-image-wrapper">
-          <img src="${imgUrl}" alt="${name}" class="card-img">
+          <img src="${imgUrl}" alt="${name}" class="card-img" onerror="this.onerror=null; this.parentElement.style.display='none';">
           <span class="badge-game">${category}</span>
         </div>
       `;
@@ -541,8 +543,8 @@ function renderProducts(keyword) {
 
 function renderAll() {
   const keyword = document.getElementById("searchInput").value.toLowerCase().trim();
-  renderNokos(keyword);
   renderProducts(keyword);
+  renderNokos(keyword);
 }
 
 function openModal(title, desc, price) {
