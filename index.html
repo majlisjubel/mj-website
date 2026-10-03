@@ -15,7 +15,7 @@
 body{
   background:
     linear-gradient(rgba(13,11,16,0.45),rgba(13,11,16,0.70)),
-    url("https://raw.githubusercontent.com/oyekrani-sketch/mj-website/dc71dc504799d5b16c702470f0767ea4111604ec/file_00000000e9b8821188dab8708a1fda9c.png") center top / cover fixed;
+    url("https://raw.githubusercontent.com/oyekrani-sketch/mj-website/dc71dc504799d5b16c702470f0767ea4111604ec/file_00000000e9b8821188dab8708a1fda9c.png") center top / cover;
   color:white;
   padding-bottom:100px;
 }
@@ -239,11 +239,13 @@ header{
 }
 
 .products{
-  padding:25px 18px;
+  padding:28px 18px 20px;
 }
 
 .products h2{
-  margin-bottom:15px;
+  margin-bottom:16px;
+  font-size:21px;
+  letter-spacing:-0.3px;
 }
 
 .product{
@@ -253,8 +255,9 @@ header{
   padding:15px;
   margin-bottom:12px;
   border-radius:20px;
-  background:#19161c;
-  border:1px solid #302b32;
+  background:rgba(25,22,28,0.88);
+  border:1px solid rgba(255,255,255,0.07);
+  box-shadow:0 6px 18px rgba(0,0,0,0.15);
 }
 
 .product-icon{
@@ -276,6 +279,28 @@ header{
 .product p{
   color:#89808a;
   font-size:12px;
+}
+  .product-info{
+  flex:1;
+  min-width:0;
+}
+
+.product-info strong{
+  display:block;
+  margin-top:7px;
+  color:#f579aa;
+  font-size:12px;
+}
+
+.order-btn{
+  border:none;
+  background:#f05b9b;
+  color:white;
+  padding:9px 12px;
+  border-radius:12px;
+  font-size:11px;
+  font-weight:bold;
+  cursor:pointer;
 }
 
 .bottom{
@@ -398,26 +423,42 @@ header{
 
 <div class="product">
   <div class="product-icon">🎮</div>
-  <div>
+  <div class="product-info">
     <h3>Akun Game</h3>
-    <p>Produk digital MJ</p>
+    <p>Roblox & MLBB</p>
+    <strong>Mulai dari Rp10.000</strong>
   </div>
+  <button class="order-btn">Lihat</button>
+</div>
+
+<div class="product">
+  <div class="product-icon">📧</div>
+  <div class="product-info">
+    <h3>Email Baru</h3>
+    <p>Email baru untuk kebutuhan digital</p>
+    <strong>Mulai dari Rp5.000</strong>
+  </div>
+  <button class="order-btn">Lihat</button>
+</div>
+
+<div class="product">
+  <div class="product-icon">📱</div>
+  <div class="product-info">
+    <h3>Nomor Virtual</h3>
+    <p>Untuk penggunaan yang sesuai</p>
+    <strong>Cek stok</strong>
+  </div>
+  <button class="order-btn">Lihat</button>
 </div>
 
 <div class="product">
   <div class="product-icon">💎</div>
-  <div>
+  <div class="product-info">
     <h3>Top Up Game</h3>
-    <p>Proses cepat</p>
+    <p>Roblox & MLBB</p>
+    <strong>Harga terjangkau</strong>
   </div>
-</div>
-
-<div class="product">
-  <div class="product-icon">🛍️</div>
-  <div>
-    <h3>Pasang Produk</h3>
-    <p>Jual produk kamu</p>
-  </div>
+  <button class="order-btn">Lihat</button>
 </div>
 
 </section>
