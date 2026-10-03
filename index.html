@@ -247,11 +247,13 @@ header{
 </div>
 
 <div class="categories">
-  <div class="category active-cat" onclick="filterCategory(this, 'Semua')">Semua Game</div>
+  <div class="category active-cat" onclick="filterCategory(this, 'Semua')">Semua</div>
+  <div class="category" onclick="filterCategory(this, 'Nokos')">Nokos</div>
+  <div class="category" onclick="filterCategory(this, 'Email Fresh')">Email Fresh</div>
   <div class="category" onclick="filterCategory(this, 'MLBB')">MLBB</div>
   <div class="category" onclick="filterCategory(this, 'Roblox')">Roblox</div>
-  <div class="category" onclick="filterCategory(this, 'eFootball')">eFootball</div>
 </div>
+
 
 <div class="section-title">PRODUK TERBARU</div>
 
@@ -311,21 +313,25 @@ function renderProducts() {
   const filtered = allProducts.filter(p => {
     const name = (p.name || "").toLowerCase();
     const cat = (p.category || "").toLowerCase();
+    const desc = (p.description || "").toLowerCase();
     
-    const matchesSearch = name.includes(keyword) || cat.includes(keyword);
-    const matchesCat = currentCategory === "Semua" || cat.includes(currentCategory.toLowerCase());
+    // Pencarian mencakup Nama, Kategori, dan Deskripsi
+    const matchesSearch = name.includes(keyword) || cat.includes(keyword) || desc.includes(keyword);
+    
+    // Filter Kategori
+    const matchesCat = (currentCategory === "Semua") || cat.includes(currentCategory.toLowerCase()) || name.includes(currentCategory.toLowerCase());
 
     return matchesSearch && matchesCat;
   });
 
   if (filtered.length === 0) {
-    container.innerHTML = `<p style="color:#aaa; grid-column: 1/-1;">Produk tidak ditemukan.</p>`;
+    container.innerHTML = `<p style="color:#aaa; grid-column: 1/-1; text-align:center; padding:20px;">Produk tidak ditemukan.</p>`;
     return;
   }
 
   container.innerHTML = filtered.map(p => {
     const name = p.name || "Produk Tanpa Nama";
-    const category = p.category || "MLBB";
+    const category = p.category || "PRODUK";
     
     // Format Harga
     let priceDisplay = "Cek Stok";
@@ -333,7 +339,7 @@ function renderProducts() {
       priceDisplay = "Rp " + Number(p.price).toLocaleString("id-ID");
     }
 
-    // Gambar Produk
+    // Gambar Produk (Pakai default jika tidak ada gambar)
     const imgUrl = (p.image_url && p.image_url.trim() !== "") 
       ? p.image_url 
       : "https://via.placeholder.com/300x300/251e2b/ffffff?text=MJ+MARKET";
@@ -347,7 +353,7 @@ function renderProducts() {
           <span class="badge-game">${category}</span>
         </div>
         <div class="card-body">
-          <span class="badge-tag">PREMIUM</span>
+          <span class="badge-tag">READY</span>
           <h3 class="card-title">${name}</h3>
           <div class="card-price">${priceDisplay}</div>
         </div>
@@ -355,6 +361,7 @@ function renderProducts() {
     `;
   }).join("");
 }
+
 
 // Modal Popup Control
 function openModal(title, desc, price) {
