@@ -347,10 +347,47 @@ header{
   justify-content:center;
   font-size:25px;
 }
+.product-detail{
+  display:none;
+  margin-top:10px;
+  padding:15px;
+  border-radius:18px;
+  background:rgba(25,22,28,0.95);
+  border:1px solid rgba(245,91,155,0.2);
+}
+
+.product-detail.show{
+  display:block;
+}
+
+.product-detail p{
+  color:#aaa;
+  font-size:13px;
+  line-height:1.6;
+  margin-bottom:10px;
+}
+
+.detail-btn{
+  display:inline-block;
+  padding:9px 13px;
+  border-radius:12px;
+  background:#f05b9b;
+  color:white;
+  text-decoration:none;
+  font-size:11px;
+  font-weight:bold;
+  }
 </style>
 </head>
 
-<body>
+<script>
+function showProduct(button, text){
+  const detail = button.parentElement.nextElementSibling;
+  detail.querySelector("p").textContent = text;
+  detail.classList.toggle("show");
+}
+</script>
+  <body>
 
 <div class="container">
 
@@ -391,7 +428,7 @@ header{
 <div class="hot">
   <small>🔥 PRODUK TERPOPULER</small>
   <h2>Belanja Produk Digital MJ</h2>
-</div>>
+</div>
 
 <div class="grid">
 
@@ -428,9 +465,11 @@ header{
     <p>Roblox & MLBB</p>
     <strong>Mulai dari Rp10.000</strong>
   </div>
-  <button class="order-btn">Lihat</button>
+  <button class="order-btn" onclick="showProduct(this,'Akun game Roblox dan MLBB. Stok dan harga dapat dikonfirmasi melalui WhatsApp MJ.')">Lihat</button>
 </div>
-
+<div class="product-detail">
+  <p></p>
+</div>
 <div class="product">
   <div class="product-icon">📧</div>
   <div class="product-info">
