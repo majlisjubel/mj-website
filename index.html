@@ -589,9 +589,11 @@ async function loadProducts(){
     .order("created_at", { ascending:false });
 
   if(error){
-    console.error(error);
-    return;
-  }
+  console.error(error);
+  document.getElementById("supabaseProducts").innerHTML =
+    "<p style='color:#ff6b99;padding:15px'>ERROR: " + error.message + "</p>";
+  return;
+}
 
   const container = document.getElementById("supabaseProducts");
 
