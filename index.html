@@ -404,6 +404,73 @@ header{
   font-size: 12px;
   cursor: pointer;
 }
+
+/* STYLE UNTUK FORM & DAFTAR ULASAN */
+.review-box {
+  background: rgba(28,24,32,0.85);
+  padding: 16px;
+  border-radius: 18px;
+  margin: 24px 18px 12px;
+  border: 1px solid rgba(255,255,255,0.1);
+}
+
+.review-input, .review-select, .review-textarea {
+  width: 100%;
+  padding: 10px 12px;
+  margin-bottom: 10px;
+  border-radius: 10px;
+  border: 1px solid #3c2a42;
+  background: #18151c;
+  color: #fff;
+  font-size: 13px;
+  box-sizing: border-box;
+  outline: none;
+}
+
+.review-textarea {
+  resize: vertical;
+}
+
+.btn-submit-review {
+  width: 100%;
+  padding: 12px;
+  background: #f05b9b;
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  font-weight: bold;
+  font-size: 13px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.btn-submit-review:hover {
+  background: #d84885;
+}
+
+.review-card {
+  background: rgba(255,255,255,0.04);
+  padding: 12px 14px;
+  border-radius: 12px;
+  margin-bottom: 10px;
+  border: 1px solid rgba(255,255,255,0.06);
+}
+
+.review-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-weight: bold;
+  font-size: 13px;
+  color: #f3a833;
+  margin-bottom: 6px;
+}
+
+.review-card-text {
+  color: #ddd;
+  font-size: 13px;
+  line-height: 1.4;
+}
 </style>
 </head>
 <body>
@@ -462,6 +529,32 @@ header{
 <div id="nokos-section" style="margin-top: 24px;">
   <div class="section-title">📱 LIST HARGA NOKOS</div>
   <div id="nokos-grid" class="product-grid"></div>
+</div>
+
+<!-- KOMPONEN FORM & DAFTAR ULASAN PEMBELI -->
+<div class="review-box">
+  <h3 style="margin-bottom: 12px; color: #fff; text-align: center; font-size: 16px;">⭐ Beri Ulasan Pembelian</h3>
+  
+  <input type="text" id="rev-nama" class="review-input" placeholder="Nama Kamu">
+  
+  <select id="rev-rating" class="review-select">
+    <option value="5">⭐⭐⭐⭐⭐ (5/5) - Sangat Puas</option>
+    <option value="4">⭐⭐⭐⭐ (4/5) - Bagus</option>
+    <option value="3">⭐⭐⭐ (3/5) - Cukup</option>
+    <option value="2">⭐⭐ (2/5) - Kurang</option>
+    <option value="1">⭐ (1/5) - Buruk</option>
+  </select>
+  
+  <textarea id="rev-komentar" class="review-textarea" placeholder="Tuliskan pengalaman atau ulasan kamu..." rows="3"></textarea>
+  
+  <button id="btn-submit-review" class="btn-submit-review" onclick="kirimUlasan()">Kirim Ulasan</button>
+</div>
+
+<div style="margin: 0 18px 24px;">
+  <div class="section-title" style="margin: 0 0 12px 0;">💬 ULASAN PEMBELI</div>
+  <div id="daftar-ulasan">
+    <p style="color:#aaa; font-size: 13px;">Memuat ulasan...</p>
+  </div>
 </div>
 
 </div>
@@ -682,7 +775,7 @@ function changeQty(amount) {
 
   currentQty += amount;
   if (currentQty < 1) currentQty = 1;
-  if (currentQty > currentProduct.stock) currentQty = currentProduct.stock; // Batasi sesuai max stok
+  if (currentQty > currentProduct.stock) currentQty = currentProduct.stock;
   
   document.getElementById("qtyInput").value = currentQty;
   updateModalTotal();
@@ -724,7 +817,70 @@ function filterCategory(el, catName) {
   renderAll();
 }
 
-document.addEventListener("DOMContentLoaded", loadProducts);
+/* FUNGSI SUPABASE ULASAN */
+async function loadReviews() {
+  const container = document.getElementById('daftar-ulasan');
+
+  try {
+    const { data: reviews, error } = await supabaseClient
+      .from('reviews')
+      .select('*')
+      .order('created_at', { ascending: false });
+
+    if (error || !reviews || reviews.length === 0) {
+      container.innerHTML = '<p style="color:#aaa; font-size:13px;">Belum ada ulasan dari pembeli.</p>';
+      return;
+    }
+
+    container.innerHTML = reviews.map(r => `
+      <div class="review-card">
+        <div class="review-card-header">
+          <span>👤 ${r.nama_pembeli}</span>
+          <span>${'⭐'.repeat(r.rating)}</span>
+        </div>
+        <p class="review-card-text">${r.komentar}</p>
+      </div>
+    `).join('');
+  } catch (err) {
+    container.innerHTML = '<p style="color:#ff6b99; font-size:13px;">Gagal memuat ulasan.</p>';
+  }
+}
+
+async function kirimUlasan() {
+  const nama = document.getElementById('rev-nama').value.trim();
+  const rating = document.getElementById('rev-rating').value;
+  const komentar = document.getElementById('rev-komentar').value.trim();
+  const btn = document.getElementById('btn-submit-review');
+
+  if (!nama || !komentar) {
+    alert('Harap isi nama dan komentar ulasan kamu!');
+    return;
+  }
+
+  btn.disabled = true;
+  btn.innerText = 'Mengirim...';
+
+  const { error } = await supabaseClient
+    .from('reviews')
+    .insert([{ nama_pembeli: nama, rating: parseInt(rating), komentar: komentar }]);
+
+  if (error) {
+    alert('Gagal mengirim ulasan: ' + error.message);
+  } else {
+    alert('Terima kasih atas ulasannya! 🙏');
+    document.getElementById('rev-nama').value = '';
+    document.getElementById('rev-komentar').value = '';
+    loadReviews();
+  }
+
+  btn.disabled = false;
+  btn.innerText = 'Kirim Ulasan';
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  loadProducts();
+  loadReviews();
+});
 </script>
 </body>
 </html>
