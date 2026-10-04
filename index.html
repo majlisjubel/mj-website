@@ -492,8 +492,8 @@ function renderProducts(keyword) {
   });
 
   if (filtered.length === 0) {
-    container.innerHTML = '<p style="color:#aaa; grid-column: 1/-1; text-align:center; padding:20px;">Tidak ada produk ditemukan.</p>';
-    titleEl.style.display = "block";
+    titleEl.style.display = "none";
+    container.innerHTML = "";
     return;
   }
 
