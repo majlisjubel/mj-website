@@ -577,7 +577,7 @@ header{
     <span id="totalPriceText" class="total-price-text">Total: Rp 0</span>
 
     <a id="modalWaBtn" class="btn-buy" href="#" target="_blank">Beli via WhatsApp</a>
-    <a id="modalSecondaryBtn" class="btn-secondary" href="https://whatsapp.com/channel/0029Vb8MLHCHLHQgH3KTTV0K" target="_blank" style="display: none;">📋 SPEK LENGKAP</a>
+    <a id="modalSecondaryBtn" class="btn-secondary" href="https://whatsapp.com/channel/0029Vb8MLHCHLHQgH3KTTV0K" target="_blank" style="display: none;">📋 LIHAT SPEK LENGKAP</a>
 
     <span class="btn-close" onclick="closeModal()">Tutup</span>
   </div>
@@ -591,16 +591,16 @@ let currentCategory = 'Semua';
 const URL_STOK_CHANNEL = "https://whatsapp.com/channel/0029Vb8MLHCHLHQgH3KTTV0K";
 const URL_TESTI_CHANNEL = "https://whatsapp.com/channel/0029VbDRClmG8l5Clsknh53W";
 
-let currentProduct = { title: '', desc: '', rawPrice: 0, formattedPrice: '', stock: 0 };
+let currentProduct = { title: '', desc: '', rawPrice: 0, formattedPrice: '', stock: 0, category: '' };
 let currentQty = 1;
 
 const nokosItems = [
-  { name: 'Nokos WhatsApp', desc: 'Nomor Kosong / OTP Instan WhatsApp Fresh', price: 'Rp 6.000', keywords: 'nokos whatsapp wa', stock: 99 },
-  { name: 'Nokos Facebook', desc: 'Nomor Kosong / OTP Instan Facebook Fresh', price: 'Rp 1.200', keywords: 'nokos facebook fb', stock: 99 },
-  { name: 'Nokos Google / Gmail / YT', desc: 'Nomor Kosong / OTP Instan Google, Gmail, dan YouTube', price: 'Rp 1.200', keywords: 'nokos google gmail youtube yt', stock: 99 },
-  { name: 'Nokos DANA', desc: 'Nomor Kosong / OTP Instan Aplikasi DANA', price: 'Rp 3.000', keywords: 'nokos dana', stock: 99 },
-  { name: 'Nokos OVO', desc: 'Nomor Kosong / OTP Instan Aplikasi OVO', price: 'Rp 1.600', keywords: 'nokos ovo', stock: 99 },
-  { name: 'Nokos SeaBank', desc: 'Nomor Kosong / OTP Instan Aplikasi SeaBank', price: 'Rp 3.000', keywords: 'nokos seabank', stock: 99 }
+  { name: 'Nokos WhatsApp', desc: 'Nomor Kosong / OTP Instan WhatsApp Fresh', price: 'Rp 6.000', keywords: 'nokos whatsapp wa', stock: 99, category: 'Nokos' },
+  { name: 'Nokos Facebook', desc: 'Nomor Kosong / OTP Instan Facebook Fresh', price: 'Rp 1.200', keywords: 'nokos facebook fb', stock: 99, category: 'Nokos' },
+  { name: 'Nokos Google / Gmail / YT', desc: 'Nomor Kosong / OTP Instan Google, Gmail, dan YouTube', price: 'Rp 1.200', keywords: 'nokos google gmail youtube yt', stock: 99, category: 'Nokos' },
+  { name: 'Nokos DANA', desc: 'Nomor Kosong / OTP Instan Aplikasi DANA', price: 'Rp 3.000', keywords: 'nokos dana', stock: 99, category: 'Nokos' },
+  { name: 'Nokos OVO', desc: 'Nomor Kosong / OTP Instan Aplikasi OVO', price: 'Rp 1.600', keywords: 'nokos ovo', stock: 99, category: 'Nokos' },
+  { name: 'Nokos SeaBank', desc: 'Nomor Kosong / OTP Instan Aplikasi SeaBank', price: 'Rp 3.000', keywords: 'nokos seabank', stock: 99, category: 'Nokos' }
 ];
 
 const SUPABASE_URL = "https://sgadlmoskhfyyksobggk.supabase.co";
@@ -648,7 +648,7 @@ function renderNokos(keyword) {
   } else {
     nokosSection.style.display = "block";
     nokosGrid.innerHTML = filteredNokos.map(item => `
-      <div class="card-product" onclick="openModal('${item.name}', '${item.desc}', '${item.price}', ${item.stock})">
+      <div class="card-product" onclick="openModal('${item.name}', '${item.desc}', '${item.price}', ${item.stock}, '${item.category}')">
         <div class="card-body">
           <div class="card-header-badge">
             <span class="badge-tag">READY (${item.stock})</span>
@@ -712,7 +712,7 @@ function renderProducts(keyword) {
     const badgeText = isAvailable ? `STOK: ${stock}` : "SOLD OUT";
 
     return `
-      <div class="card-product" onclick="openModal('${name}', '${desc}', '${priceDisplay}', ${stock})">
+      <div class="card-product" onclick="openModal('${name}', '${desc}', '${priceDisplay}', ${stock}, '${category}')">
         ${imageHTML}
         <div class="card-body">
           ${!imgUrl ? `
@@ -735,10 +735,14 @@ function renderAll() {
   renderNokos(keyword);
 }
 
-function openModal(title, desc, priceStr, stock) {
+function openModal(title, desc, priceStr, stock, category) {
   const numStock = Number(stock) || 0;
   const isAvailable = numStock > 0;
+  const catLower = (category || "").toLowerCase();
   
+  // CEK APAKAH KATEGORI ADALAH MLBB
+  const isMLBB = catLower.includes("mlbb") || catLower.includes("mobile legend") || catLower.includes("ml");
+
   currentQty = isAvailable ? 1 : 0;
   document.getElementById("qtyInput").value = currentQty;
   
@@ -749,7 +753,8 @@ function openModal(title, desc, priceStr, stock) {
     desc: desc,
     rawPrice: rawNum,
     formattedPrice: priceStr,
-    stock: numStock
+    stock: numStock,
+    category: category
   };
 
   document.getElementById("modalTitle").innerText = title;
@@ -764,12 +769,17 @@ function openModal(title, desc, priceStr, stock) {
     qtyBox.style.display = "none";
     document.getElementById("totalPriceText").innerText = "❌ PRODUK INI SUDAH TERJUAL / SOLD OUT";
     
-    // Tombol utama mengarah langsung ke Saluran Testimoni
-    btnWa.innerText = "📸 SPEK LENGKAP & TESTI";
-    btnWa.href = URL_TESTI_CHANNEL;
-    btnWa.style.background = "#25d366";
+    if (isMLBB) {
+      // Hanya tampilkan tombol Spek Lengkap/Testi jika kategori MLBB
+      btnWa.innerText = "📸 SPEK LENGKAP & TESTI";
+      btnWa.href = URL_TESTI_CHANNEL;
+      btnWa.style.background = "#25d366";
+      btnWa.style.display = "block";
+    } else {
+      // Jika produk non-MLBB sold out, sembunyikan tombol utama
+      btnWa.style.display = "none";
+    }
 
-    // Sembunyikan tombol kedua
     btnSecondary.style.display = "none";
 
   } else {
@@ -777,14 +787,18 @@ function openModal(title, desc, priceStr, stock) {
     qtyBox.style.display = "flex";
     document.getElementById("modalStockLabel").innerText = `Jumlah Pesanan (Stok: ${numStock}):`;
     
-    // Tombol utama Beli via WhatsApp
+    btnWa.style.display = "block";
     btnWa.innerText = "Beli via WhatsApp";
     btnWa.style.background = "#25d366";
 
-    // Tombol kedua ke Saluran Stok
-    btnSecondary.innerText = "📋 LIHAT SPEK LENGKAP";
-    btnSecondary.href = URL_STOK_CHANNEL;
-    btnSecondary.style.display = "block";
+    // Tombol sekunder (Spek Lengkap) HANYA MUNCUL JIKA KATEGORI MLBB
+    if (isMLBB) {
+      btnSecondary.innerText = "📋 LIHAT SPEK LENGKAP";
+      btnSecondary.href = URL_STOK_CHANNEL;
+      btnSecondary.style.display = "block";
+    } else {
+      btnSecondary.style.display = "none";
+    }
 
     updateModalTotal();
   }
