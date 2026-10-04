@@ -388,12 +388,20 @@ header{
   border-radius: 12px;
   text-decoration: none;
   font-weight: bold;
+  margin-bottom: 8px;
 }
 
-.btn-buy.disabled {
-  background: #444;
-  color: #888;
-  pointer-events: none;
+.btn-secondary {
+  display: block;
+  text-align: center;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #f3a833;
+  padding: 9px;
+  border-radius: 12px;
+  text-decoration: none;
+  font-weight: bold;
+  font-size: 12px;
 }
 
 .btn-close{
@@ -514,6 +522,257 @@ header{
   <div class="category active-cat" onclick="filterCategory(this, 'Semua')">Semua</div>
   <div class="category" onclick="filterCategory(this, 'Top Up')">Top Up</div>
   <div class="category" onclick="filterCategory(this, 'MLBB')">MLBB</div>
+  <div class="category" onclick="filterCategory(this, 'Roblox')">Roblox</div>
+  <div class="category" onclick="filterCategory(this, 'Gmail Fresh')">Gmail Fresh</div>
+  <div class="category" onclick="filterCategory(this, 'Nokos')">Nokos</div>
+  <div class="category" onclick="filterCategory(this, 'Barang Bekas')">Barang Bekas</div>
+</div>
+
+<div id="other-products-title" class="section-title">PRODUK TERBARU</div>
+
+<div id="product-container" class="product-grid">
+  <p style="color:#aaa; padding: 10px; grid-column: 1/-1;">Memuat produk...</p>
+</div>
+
+<div id="nokos-section" style="margin-top: 24px;">
+  <div class="section-title">📱 LIST HARGA NOKOS</div>
+  <div id="nokos-grid" class="product-grid"></div>
+</div>
+
+<!-- KOMPONEN FORM & DAFTAR ULASAN PEMBELI -->
+<div class="review-box">
+  <h3 style="margin-bottom: 12px; color: #fff; text-align: center; font-size: 16px;">⭐ Beri Ulasan Pembelian</h3>
+  
+  <input type="text" id="rev-nama" class="review-input" placeholder="Nama Kamu">
+  
+  <select id="rev-rating" class="review-select">
+    <option value="5">⭐⭐⭐⭐⭐ (5/5) - Sangat Puas</option>
+    <option value="4">⭐⭐⭐⭐ (4/5) - Bagus</option>
+    <option value="3">⭐⭐⭐ (3/5) - Cukup</option>
+    <option value="2">⭐⭐ (2/5) - Kurang</option>
+    <option value="1">⭐ (1/5) - Buruk</option>
+  </select>
+  
+  <textarea id="rev-komentar" class="review-textarea" placeholder="Tuliskan pengalaman atau ulasan kamu..." rows="3"></textarea>
+  
+  <button id="btn-submit-review" class="btn-submit-review" onclick="kirimUlasan()">Kirim Ulasan</button>
+</div>
+
+<div style="margin: 0 18px 24px;">
+  <div class="section-title" style="margin: 0 0 12px 0;">💬 ULASAN PEMBELI</div>
+  <div id="daftar-ulasan">
+    <p style="color:#aaa; font-size: 13px;">Memuat ulasan...</p>
+  </div>
+</div>
+
+</div>
+
+<div id="detailModal" class="modal">
+  <div class="modal-content">
+    <h3 id="modalTitle">Detail Produk</h3>
+    <p id="modalDesc">Deskripsi produk...</p>
+    
+    <div id="qtyBox" class="qty-container">
+      <span class="qty-label" id="modalStockLabel">Jumlah Pesanan:</span>
+      <div class="qty-controls">
+        <button id="btnMinus" class="qty-btn" onclick="changeQty(-1)">-</button>
+        <input type="number" id="qtyInput" class="qty-input" value="1" min="1" readonly>
+        <button id="btnPlus" class="qty-btn" onclick="changeQty(1)">+</button>
+      </div>
+    </div>
+
+    <span id="totalPriceText" class="total-price-text">Total: Rp 0</span>
+
+    <a id="modalWaBtn" class="btn-buy" href="#" target="_blank">Beli via WhatsApp</a>
+    <a id="modalSecondaryBtn" class="btn-secondary" href="https://whatsapp.com/channel/0029Vb8MLHCHLHQgH3KTTV0K" target="_blank" style="display: none;">📋 SPEK LENGKAP</a>
+
+    <span class="btn-close" onclick="closeModal()">Tutup</span>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+let allProducts = [];
+let currentCategory = 'Semua';
+
+const URL_STOK_CHANNEL = "https://whatsapp.com/channel/0029Vb8MLHCHLHQgH3KTTV0K";
+const URL_TESTI_CHANNEL = "https://whatsapp.com/channel/0029VbDRClmG8l5Clsknh53W";
+
+let currentProduct = { title: '', desc: '', rawPrice: 0, formattedPrice: '', stock: 999 };
+let currentQty = 1;
+
+const nokosItems = [
+  { name: 'Nokos WhatsApp', desc: 'Nomor Kosong / OTP Instan WhatsApp Fresh', price: 'Rp 6.000', keywords: 'nokos whatsapp wa', stock: 99 },
+  { name: 'Nokos Facebook', desc: 'Nomor Kosong / OTP Instan Facebook Fresh', price: 'Rp 1.200', keywords: 'nokos facebook fb', stock: 99 },
+  { name: 'Nokos Google / Gmail / YT', desc: 'Nomor Kosong / OTP Instan Google, Gmail, dan YouTube', price: 'Rp 1.200', keywords: 'nokos google gmail youtube yt', stock: 99 },
+  { name: 'Nokos DANA', desc: 'Nomor Kosong / OTP Instan Aplikasi DANA', price: 'Rp 3.000', keywords: 'nokos dana', stock: 99 },
+  { name: 'Nokos OVO', desc: 'Nomor Kosong / OTP Instan Aplikasi OVO', price: 'Rp 1.600', keywords: 'nokos ovo', stock: 99 },
+  { name: 'Nokos SeaBank', desc: 'Nomor Kosong / OTP Instan Aplikasi SeaBank', price: 'Rp 3.000', keywords: 'nokos seabank', stock: 99 }
+];
+
+const SUPABASE_URL = "https://sgadlmoskhfyyksobggk.supabase.co";
+const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNnYWRsbW9za2hmeXlrc29iZ2drIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTA5NzcxNzksImV4cCI6MjEwNjU1MzE3OX0.XASgEjWt-PEK0jsFAkncDGfQ7Tu8JHDtW3eHIqn0mwk";
+const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+async function loadProducts() {
+  const container = document.getElementById("product-container");
+
+  try {
+    const { data, error } = await supabaseClient
+      .from("products")
+      .select("*")
+      .order("id", { ascending: false });
+
+    if (error) {
+      container.innerHTML = '<p style="color:#ff6b99;padding:10px; grid-column: 1/-1;">Gagal memuat produk dari database.</p>';
+      return;
+    }
+
+    allProducts = data || [];
+    renderAll();
+
+  } catch (err) {
+    console.error(err);
+  }
+}
+
+function renderNokos(keyword) {
+  const nokosGrid = document.getElementById("nokos-grid");
+  const nokosSection = document.getElementById("nokos-section");
+
+  if (currentCategory !== 'Semua' && currentCategory !== 'Nokos') {
+    nokosSection.style.display = "none";
+    return;
+  }
+
+  const filteredNokos = nokosItems.filter(item => {
+    const text = (item.name + " " + item.desc + " " + item.keywords).toLowerCase();
+    return text.includes(keyword);
+  });
+
+  if (filteredNokos.length === 0) {
+    nokosSection.style.display = "none";
+  } else {
+    nokosSection.style.display = "block";
+    nokosGrid.innerHTML = filteredNokos.map(item => `
+      <div class="card-product" onclick="openModal('${item.name}', '${item.desc}', '${item.price}', ${item.stock})">
+        <div class="card-body">
+          <div class="card-header-badge">
+            <span class="badge-tag">READY (${item.stock})</span>
+            <span class="nokos-badge-game">NOKOS</span>
+          </div>
+          <h3 class="card-title">🔹 ${item.name.replace('Nokos ', '')}</h3>
+          <div class="card-price">${item.price}</div>
+        </div>
+      </div>
+    `).join("");
+  }
+}
+
+function renderProducts(keyword) {
+  const container = document.getElementById("product-container");
+  const titleEl = document.getElementById("other-products-title");
+
+  const filtered = allProducts.filter(p => {
+    const name = (p.name || "").toLowerCase();
+    const cat = (p.category || "").toLowerCase();
+    const desc = (p.description || "").toLowerCase();
+    
+    const matchesSearch = name.includes(keyword) || cat.includes(keyword) || desc.includes(keyword);
+    const matchesCat = (currentCategory === "Semua") || cat.includes(currentCategory.toLowerCase()) || name.includes(currentCategory.toLowerCase());
+
+    return matchesSearch && matchesCat;
+  });
+
+  if (filtered.length === 0) {
+    titleEl.style.display = "none";
+    container.innerHTML = "";
+    return;
+  }
+
+  titleEl.style.display = "block";
+  container.innerHTML = filtered.map(p => {
+    const name = p.name || "Produk Tanpa Nama";
+    const category = p.category || "PRODUK";
+    const stock = (p.stock !== undefined && p.stock !== null) ? Number(p.stock) : 0;
+    const isAvailable = stock > 0;
+    
+    let priceDisplay = "Cek Stok";
+    if (p.price && Number(p.price) > 0) {
+      priceDisplay = "Rp " + Number(p.price).toLocaleString("id-ID");
+    }
+
+    const imgUrl = (p.image_url && p.image_url.trim() !== "") ? p.image_url : "";
+    const desc = (p.description || "Belum ada deskripsi").replace(/'/g, "\\'");
+
+    let imageHTML = "";
+    if (imgUrl) {
+      imageHTML = `
+        <div class="card-image-wrapper">
+          <img src="${imgUrl}" alt="${name}" class="card-img" loading="lazy" onerror="this.onerror=null; this.parentElement.style.display='none';">
+          <span class="badge-game">${category}</span>
+        </div>
+      `;
+    }
+
+    const badgeClass = isAvailable ? "badge-tag" : "badge-tag badge-soldout";
+    const badgeText = isAvailable ? `STOK: ${stock}` : "SOLD OUT";
+
+    return `
+      <div class="card-product" onclick="openModal('${name}', '${desc}', '${priceDisplay}', ${stock})">
+        ${imageHTML}
+        <div class="card-body">
+          ${!imgUrl ? `
+            <div class="card-header-badge">
+              <span class="${badgeClass}">${badgeText}</span>
+              <span class="nokos-badge-game">${category}</span>
+            </div>
+          ` : `<span class="${badgeClass}">${badgeText}</span>`}
+          <h3 class="card-title">${name}</h3>
+          <div class="card-price">${priceDisplay}</div>
+        </div>
+      </div>
+    `;
+  }).join("");
+}
+
+function renderAll() {
+  const keyword = document.getElementById("searchInput").value.toLowerCase().trim();
+  renderProducts(keyword);
+  renderNokos(keyword);
+}
+
+function openModal(title, desc, priceStr, stock) {
+  const isAvailable = stock > 0;
+  currentQty = isAvailable ? 1 : 0;
+  
+  document.getElementById("qtyInput").value = currentQty;
+  
+  const rawNum = parseInt(priceStr.replace(/[^0-9]/g, ''), 10) || 0;
+  
+  currentProduct = {
+    title: title,
+    desc: desc,
+    rawPrice: rawNum,
+    formattedPrice: priceStr,
+    stock: stock
+  };
+
+  document.getElementById("modalTitle").innerText = title;
+  document.getElementById("modalDesc").innerText = desc;
+
+  const qtyBox = document.getElementById("qtyBox");
+  const btnWa = document.getElementById("modalWaBtn");
+  const btnSecondary = document.getElementById("modalSecondaryBtn");
+
+  if (!isAvailable) {
+    // JIKA SOLD OUT
+    qtyBox.style.display = "none";
+    document.getElementById("totalPriceText").innerText = "❌ PRODUK INI SUDAH TERJUAL / SOLD OUT";
+    
+    // Tombol utama mengarah ke Saluran Testimoni
+    btnWa.innerText = "📸 SPEK LENGKAP & TESTI";
+    btnWa.href = URL_TESTI_ClterCategory(this, 'MLBB')">MLBB</div>
   <div class="category" onclick="filterCategory(this, 'Roblox')">Roblox</div>
   <div class="category" onclick="filterCategory(this, 'Gmail Fresh')">Gmail Fresh</div>
   <div class="category" onclick="filterCategory(this, 'Nokos')">Nokos</div>
