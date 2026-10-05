@@ -310,10 +310,34 @@ header{
   padding: 20px;
   max-width: 400px;
   width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
 }
 
 .modal h3{ margin-bottom: 10px; font-size: 18px; }
 .modal p{ color: #ccc; font-size: 13px; line-height: 1.6; margin-bottom: 14px; }
+
+/* Input Target ID untuk Game Topup */
+.input-group {
+  margin-bottom: 12px;
+  display: flex;
+  gap: 8px;
+}
+
+.input-field {
+  width: 100%;
+  padding: 10px 12px;
+  background: #18151c;
+  border: 1px solid #3c2a42;
+  border-radius: 10px;
+  color: #fff;
+  font-size: 13px;
+  outline: none;
+}
+
+.input-field:focus {
+  border-color: #f05b9b;
+}
 
 .qty-container {
   display: flex;
@@ -366,7 +390,7 @@ header{
 }
 
 .total-price-text {
-  font-size: 13px;
+  font-size: 14px;
   color: #f05b9b;
   font-weight: bold;
   margin-bottom: 14px;
@@ -375,15 +399,23 @@ header{
 
 .btn-buy{
   display: block;
+  width: 100%;
   text-align: center;
   background: #25d366;
   color: white;
   padding: 12px;
+  border: none;
   border-radius: 12px;
-  text-decoration: none;
   font-weight: bold;
   margin-bottom: 8px;
   font-size: 13px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.btn-buy:disabled {
+  background: #555;
+  cursor: not-allowed;
 }
 
 .btn-secondary {
@@ -514,12 +546,17 @@ header{
 
 <div class="categories">
   <div class="category active-cat" onclick="filterCategory(this, 'Semua')">Semua</div>
-  <div class="category" onclick="filterCategory(this, 'Top Up')">Top Up</div>
-  <div class="category" onclick="filterCategory(this, 'MLBB')">MLBB</div>
+  <div class="category" onclick="filterCategory(this, 'Top Up')">Top Up MLBB</div>
+  <div class="category" onclick="filterCategory(this, 'MLBB')">Akun MLBB</div>
   <div class="category" onclick="filterCategory(this, 'Roblox')">Roblox</div>
   <div class="category" onclick="filterCategory(this, 'Gmail Fresh')">Gmail Fresh</div>
   <div class="category" onclick="filterCategory(this, 'Nokos')">Nokos</div>
   <div class="category" onclick="filterCategory(this, 'Barang Bekas')">Barang Bekas</div>
+</div>
+
+<div id="topup-section" style="margin-top: 10px;">
+  <div class="section-title">💎 TOP UP DIAMOND MLBB INSTAN</div>
+  <div id="topup-grid" class="product-grid"></div>
 </div>
 
 <div id="other-products-title" class="section-title">PRODUK TERBARU</div>
@@ -560,11 +597,21 @@ header{
 
 </div>
 
+<!-- MODAL CHECKOUT -->
 <div id="detailModal" class="modal">
   <div class="modal-content">
     <h3 id="modalTitle">Detail Produk</h3>
     <p id="modalDesc">Deskripsi produk...</p>
     
+    <!-- Input User ID & Server ID MLBB -->
+    <div id="mlbbInputContainer" style="display:none; margin-bottom: 14px;">
+      <label style="font-size: 12px; color: #f05b9b; font-weight: bold; margin-bottom: 6px; display: block;">🎯 masukan ID & Zone ID MLBB:</label>
+      <div class="input-group">
+        <input type="number" id="mlbbUserId" class="input-field" placeholder="User ID (misal: 12345678)">
+        <input type="number" id="mlbbZoneId" class="input-field" placeholder="Zone ID (misal: 1234)" style="width: 110px;">
+      </div>
+    </div>
+
     <div id="qtyBox" class="qty-container">
       <span class="qty-label" id="modalStockLabel">Jumlah Pesanan:</span>
       <div class="qty-controls">
@@ -576,7 +623,7 @@ header{
 
     <span id="totalPriceText" class="total-price-text">Total: Rp 0</span>
 
-    <a id="modalWaBtn" class="btn-buy" href="#" target="_blank">Beli via WhatsApp</a>
+    <button id="modalBuyBtn" class="btn-buy" onclick="handleCheckout()">🚀 Beli sekarang</button>
     <a id="modalSecondaryBtn" class="btn-secondary" href="https://whatsapp.com/channel/0029Vb8MLHCHLHQgH3KTTV0K" target="_blank" style="display: none;">📋 LIHAT SPEK LENGKAP</a>
 
     <span class="btn-close" onclick="closeModal()">Tutup</span>
@@ -591,8 +638,14 @@ let currentCategory = 'Semua';
 const URL_STOK_CHANNEL = "https://whatsapp.com/channel/0029Vb8MLHCHLHQgH3KTTV0K";
 const URL_TESTI_CHANNEL = "https://whatsapp.com/channel/0029VbDRClmG8l5Clsknh53W";
 
-let currentProduct = { title: '', desc: '', rawPrice: 0, formattedPrice: '', stock: 0, category: '' };
+let currentProduct = { title: '', desc: '', rawPrice: 0, formattedPrice: '', stock: 0, category: '', isTopUp: false, serviceCode: '' };
 let currentQty = 1;
+
+// LIST PRODUCT TOPUP MLBB DENGAN SERVICE CODE VIP RESELLER & HARGA DISESUAIKAN
+const topupItems = [
+  { name: '55 Diamonds MLBB', desc: 'Top Up Fast Process 55 Diamonds MLBB', price: 'Rp 14.000', rawPrice: 14000, serviceCode: 'MLGLOBAL22590-S14', category: 'Top Up' },
+  { name: '86 Diamonds MLBB', desc: 'Top Up Fast Process 86 Diamonds MLBB', price: 'Rp 22.000', rawPrice: 22000, serviceCode: 'MLGLOBAL13-S14', category: 'Top Up' }
+];
 
 const nokosItems = [
   { name: 'Nokos WhatsApp', desc: 'Nomor Kosong / OTP Instan WhatsApp Fresh', price: 'Rp 6.000', keywords: 'nokos whatsapp wa', stock: 99, category: 'Nokos' },
@@ -626,6 +679,39 @@ async function loadProducts() {
 
   } catch (err) {
     console.error(err);
+  }
+}
+
+function renderTopup(keyword) {
+  const topupGrid = document.getElementById("topup-grid");
+  const topupSection = document.getElementById("topup-section");
+
+  if (currentCategory !== 'Semua' && currentCategory !== 'Top Up') {
+    topupSection.style.display = "none";
+    return;
+  }
+
+  const filteredTopup = topupItems.filter(item => {
+    const text = (item.name + " " + item.desc).toLowerCase();
+    return text.includes(keyword);
+  });
+
+  if (filteredTopup.length === 0) {
+    topupSection.style.display = "none";
+  } else {
+    topupSection.style.display = "block";
+    topupGrid.innerHTML = filteredTopup.map(item => `
+      <div class="card-product" onclick="openTopupModal('${item.name}', '${item.desc}', '${item.price}', ${item.rawPrice}, '${item.serviceCode}')">
+        <div class="card-body">
+          <div class="card-header-badge">
+            <span class="badge-tag">INSTAN</span>
+            <span class="nokos-badge-game">TOP UP</span>
+          </div>
+          <h3 class="card-title">💎 ${item.name}</h3>
+          <div class="card-price">${item.price}</div>
+        </div>
+      </div>
+    `).join("");
   }
 }
 
@@ -733,6 +819,36 @@ function renderAll() {
   const keyword = document.getElementById("searchInput").value.toLowerCase().trim();
   renderProducts(keyword);
   renderNokos(keyword);
+  renderTopup(keyword);
+}
+
+function openTopupModal(title, desc, priceStr, rawPrice, serviceCode) {
+  currentQty = 1;
+  document.getElementById("qtyInput").value = 1;
+
+  currentProduct = {
+    title: title,
+    desc: desc,
+    rawPrice: rawPrice,
+    formattedPrice: priceStr,
+    stock: 999,
+    category: 'Top Up',
+    isTopUp: true,
+    serviceCode: serviceCode
+  };
+
+  document.getElementById("modalTitle").innerText = title;
+  document.getElementById("modalDesc").innerText = desc;
+  document.getElementById("mlbbInputContainer").style.display = "block";
+  document.getElementById("qtyBox").style.display = "none"; // Topup per satuan dulu
+  document.getElementById("modalSecondaryBtn").style.display = "none";
+
+  const btnBuy = document.getElementById("modalBuyBtn");
+  btnBuy.innerText = "⚡ Beli sekarang";
+  btnBuy.style.background = "#f05b9b";
+
+  document.getElementById("totalPriceText").innerText = `Total: ${priceStr}`;
+  document.getElementById("detailModal").style.display = "flex";
 }
 
 function openModal(title, desc, priceStr, stock, category) {
@@ -740,11 +856,11 @@ function openModal(title, desc, priceStr, stock, category) {
   const isAvailable = numStock > 0;
   const catLower = (category || "").toLowerCase();
   
-  // CEK APAKAH KATEGORI ADALAH MLBB
   const isMLBB = catLower.includes("mlbb") || catLower.includes("mobile legend") || catLower.includes("ml");
 
   currentQty = isAvailable ? 1 : 0;
   document.getElementById("qtyInput").value = currentQty;
+  document.getElementById("mlbbInputContainer").style.display = "none";
   
   const rawNum = parseInt(priceStr.replace(/[^0-9]/g, ''), 10) || 0;
   
@@ -754,44 +870,42 @@ function openModal(title, desc, priceStr, stock, category) {
     rawPrice: rawNum,
     formattedPrice: priceStr,
     stock: numStock,
-    category: category
+    category: category,
+    isTopUp: false,
+    serviceCode: ''
   };
 
   document.getElementById("modalTitle").innerText = title;
   document.getElementById("modalDesc").innerText = desc;
 
   const qtyBox = document.getElementById("qtyBox");
-  const btnWa = document.getElementById("modalWaBtn");
+  const btnBuy = document.getElementById("modalBuyBtn");
   const btnSecondary = document.getElementById("modalSecondaryBtn");
 
   if (!isAvailable) {
-    // JIKA STOK HABIS / SOLD OUT
     qtyBox.style.display = "none";
     document.getElementById("totalPriceText").innerText = "❌ PRODUK INI SUDAH TERJUAL / SOLD OUT";
     
     if (isMLBB) {
-      // Hanya tampilkan tombol Spek Lengkap/Testi jika kategori MLBB
-      btnWa.innerText = "📸 SPEK LENGKAP & TESTI";
-      btnWa.href = URL_TESTI_CHANNEL;
-      btnWa.style.background = "#25d366";
-      btnWa.style.display = "block";
+      btnBuy.innerText = "📸 SPEK LENGKAP & TESTI";
+      btnBuy.onclick = () => window.open(URL_TESTI_CHANNEL, '_blank');
+      btnBuy.style.background = "#25d366";
+      btnBuy.style.display = "block";
     } else {
-      // Jika produk non-MLBB sold out, sembunyikan tombol utama
-      btnWa.style.display = "none";
+      btnBuy.style.display = "none";
     }
 
     btnSecondary.style.display = "none";
 
   } else {
-    // JIKA MASIH READY
     qtyBox.style.display = "flex";
     document.getElementById("modalStockLabel").innerText = `Jumlah Pesanan (Stok: ${numStock}):`;
     
-    btnWa.style.display = "block";
-    btnWa.innerText = "Beli via WhatsApp";
-    btnWa.style.background = "#25d366";
+    btnBuy.style.display = "block";
+    btnBuy.innerText = "Beli via WhatsApp";
+    btnBuy.style.background = "#25d366";
+    btnBuy.onclick = () => handleCheckout();
 
-    // Tombol sekunder (Spek Lengkap) HANYA MUNCUL JIKA KATEGORI MLBB
     if (isMLBB) {
       btnSecondary.innerText = "📋 LIHAT SPEK LENGKAP";
       btnSecondary.href = URL_STOK_CHANNEL;
@@ -820,8 +934,6 @@ function changeQty(amount) {
 function updateModalTotal() {
   if (currentProduct.stock <= 0) return;
 
-  const btnWa = document.getElementById("modalWaBtn");
-
   let totalText = "";
   if (currentProduct.rawPrice > 0) {
     const totalPrice = currentProduct.rawPrice * currentQty;
@@ -831,9 +943,69 @@ function updateModalTotal() {
   }
 
   document.getElementById("totalPriceText").innerText = totalText;
+}
 
-  const textWa = encodeURIComponent(`Halo Admin Majlis Jubel 👋, saya mau order produk berikut:\n\n🔹 Layanan: ${currentProduct.title}\n📦 Jumlah: ${currentQty}x\n💰 ${totalText}\n\nApakah stoknya ready? Mohon diproses ya, terima kasih!`);
-  btnWa.href = `https://wa.me/6285179807522?text=${textWa}`;
+// FUNGSI CHECKOUT UTAMA
+async function handleCheckout() {
+  if (currentProduct.isTopUp) {
+    // JIKA ORDER TOP UP DIAMOND MLBB
+    const userId = document.getElementById("mlbbUserId").value.trim();
+    const zoneId = document.getElementById("mlbbZoneId").value.trim();
+
+    if (!userId || !zoneId) {
+      alert("Harap masukkan User ID dan Zone ID MLBB kamu secara lengkap!");
+      return;
+    }
+
+    const fullTarget = `${userId}(${zoneId})`;
+    const btnBuy = document.getElementById("modalBuyBtn");
+    btnBuy.disabled = true;
+    btnBuy.innerText = "Menyimpan Pesanan...";
+
+    try {
+      // Simpan Ke Database Orders Supabase
+      const { data, error } = await supabaseClient
+        .from('orders')
+        .insert([
+          {
+            nama_produk: currentProduct.title,
+            kode_layanan: currentProduct.serviceCode,
+            target_id: fullTarget,
+            harga_total: currentProduct.rawPrice,
+            status: 'pending'
+          }
+        ]);
+
+      if (error) {
+        alert("Gagal membuat order: " + error.message);
+        btnBuy.disabled = false;
+        btnBuy.innerText = "⚡ Beli sekarang";
+        return;
+      }
+
+      // Redirect ke WhatsApp untuk Pembayaran
+      const textWa = encodeURIComponent(`Halo Admin Majlis Jubel 👋\n\nSaya sudah buat orderan Top Up:\n🔹 Produk: ${currentProduct.title}\n🎯 ID MLBB: ${fullTarget}\n💰 Total: Rp ${currentProduct.rawPrice.toLocaleString("id-ID")}\n\nMohon info QRIS / No Rekening untuk pembayarannya ya!`);
+      window.open(`https://wa.me/6285179807522?text=${textWa}`, '_blank');
+      
+      closeModal();
+      btnBuy.disabled = false;
+      btnBuy.innerText = "⚡ Beli sekarang";
+
+    } catch (err) {
+      alert("Terjadi kesalahan koneksi.");
+      btnBuy.disabled = false;
+      btnBuy.innerText = "⚡ Beli sekarang";
+    }
+
+  } else {
+    // JIKA PRODUK NON-TOPUP (WA BIASA)
+    let totalText = currentProduct.rawPrice > 0 
+      ? `Rp ${(currentProduct.rawPrice * currentQty).toLocaleString("id-ID")} (${currentQty}x)`
+      : currentProduct.formattedPrice;
+
+    const textWa = encodeURIComponent(`Halo Admin Majlis Jubel 👋, saya mau order produk berikut:\n\n🔹 Layanan: ${currentProduct.title}\n📦 Jumlah: ${currentQty}x\n💰 Total: ${totalText}\n\nApakah stoknya ready? Mohon diproses ya, terima kasih!`);
+    window.open(`https://wa.me/6285179807522?text=${textWa}`, '_blank');
+  }
 }
 
 function closeModal() {
