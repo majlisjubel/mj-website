@@ -83,6 +83,53 @@ header{
   font-weight: bold;
 }
 
+/* BANNER REKBER COMPACT */
+.rekber-banner {
+  margin: 12px 14px;
+  background: linear-gradient(135deg, rgba(6, 78, 59, 0.85), rgba(15, 23, 42, 0.95));
+  border: 1px solid rgba(16, 185, 129, 0.35);
+  border-radius: 16px;
+  padding: 10px 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  backdrop-filter: blur(8px);
+}
+
+.rekber-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 1;
+}
+
+.rekber-badge-fee {
+  font-size: 9px;
+  background: rgba(16, 185, 129, 0.2);
+  color: #34d399;
+  border: 1px solid rgba(16, 185, 129, 0.4);
+  padding: 1px 6px;
+  border-radius: 6px;
+  font-weight: bold;
+}
+
+.btn-rekber {
+  background: #10b981;
+  color: #064e3b;
+  padding: 7px 12px;
+  border-radius: 10px;
+  font-size: 11px;
+  font-weight: bold;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: 0.2s;
+}
+
+.btn-rekber:hover {
+  background: #34d399;
+}
+
 .hero-section {
   margin: 18px 18px 8px;
   text-align: center;
@@ -528,62 +575,25 @@ header{
     </a>
   </div>
 </header>
-  <!-- BANNER REKBER / MC (MAJLIS JUBEL) -->
-<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 my-6">
-  <div class="relative overflow-hidden rounded-2xl bg-gradient-to-r from-emerald-900 via-emerald-800 to-teal-900 text-white shadow-xl border border-emerald-700/50 p-5 sm:p-6">
-    
-    <!-- Pattern Background Aesthetic -->
-    <div class="absolute -right-10 -bottom-10 w-48 h-48 bg-emerald-500/10 rounded-full blur-2xl pointer-events-none"></div>
-    <div class="absolute -left-10 -top-10 w-48 h-48 bg-teal-400/10 rounded-full blur-2xl pointer-events-none"></div>
 
-    <div class="relative z-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
-      
-      <!-- Bagian Kiri: Icon & Informasi Rekber -->
-      <div class="flex items-start gap-4">
-        <!-- Icon Badge Rekber -->
-        <div class="shrink-0 w-12 h-12 rounded-xl bg-emerald-500/20 border border-emerald-400/30 flex items-center justify-center text-emerald-400 text-2xl shadow-inner">
-          🛡️
-        </div>
-        
-        <div>
-          <div class="flex flex-wrap items-center gap-2 mb-1">
-            <h3 class="text-lg font-bold tracking-wide text-white">
-              Sistem Rekber / Mid Man (MC) Resmi
-            </h3>
-            <span class="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
-              Fee Hemat Rp2.000 / Transaksi
-            </span>
-          </div>
-          <p class="text-sm text-emerald-100/90 leading-relaxed max-w-2xl">
-            Transaksi antar penjual & pembeli di Majlis Jubel dijamin 100% aman! Dana ditahan sementara oleh Admin sampai produk/akun sukses diterima.
-          </p>
-        </div>
+<!-- BANNER REKBER / MC RINGKAS & PAS DI HP -->
+<div class="rekber-banner">
+  <div class="rekber-info">
+    <span style="font-size: 18px;">🛡️</span>
+    <div>
+      <div style="display: flex; align-items: center; gap: 6px; flex-wrap: wrap;">
+        <strong style="font-size: 12px; color: #fff;">Rekber / MC Resmi</strong>
+        <span class="rekber-badge-fee">Fee Rp2.000</span>
       </div>
-
-      <!-- Bagian Kanan: Tombol Aksi (CTA) -->
-      <div class="flex flex-wrap items-center gap-3 w-full md:w-auto shrink-0 pt-2 md:pt-0 border-t md:border-t-0 border-emerald-700/40">
-        <a href="#daftar-lapak" class="flex-1 md:flex-none inline-flex items-center justify-center px-4 py-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-emerald-950 font-bold text-sm transition-all duration-200 shadow-md hover:shadow-emerald-500/20 active:scale-95">
-          <span>Gelar Lapak Sekarang</span>
-          <svg class="w-4 h-4 ml-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/>
-          </svg>
-        </a>
-      </div>
-
+      <p style="font-size: 10px; color: #a7f3d0; margin-top: 2px; line-height: 1.2;">
+        Transaksi 100% aman, dana ditahan Admin sampai produk sukses diterima.
+      </p>
     </div>
-
-    <!-- Ticker / Running Info Mini Atas Saluran Stok -->
-    <div class="mt-4 pt-3 border-t border-emerald-700/30 flex items-center gap-2 text-xs text-emerald-200/80">
-      <span class="inline-block w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-      <span class="font-medium text-emerald-300">Status Saluran Stok:</span>
-      <marquee class="w-full text-emerald-100/90" scrollamount="4">
-        📦 Semua transaksi stok yang restok/sold out terproteksi garansi Rekber Majlis Jubel • Selalu konfirmasi pembayaran via WA Admin resmi!
-      </marquee>
-    </div>
-
   </div>
+  <a href="https://wa.me/6285179807522?text=Halo%20Admin,%20saya%20mau%20pakai%20jasa%20Rekber" target="_blank" class="btn-rekber">
+    Pakai MC ➔
+  </a>
 </div>
-
 
 <div class="hero-section">
   <h1 class="hero-title">Majlis Jubel <span>Marketplace</span></h1>
@@ -689,7 +699,7 @@ header{
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 let allProducts = [];
-let topupItems = []; // Sekarang diisi otomatis dari Supabase
+let topupItems = [];
 let currentCategory = 'Beranda';
 
 const URL_STOK_CHANNEL = "https://whatsapp.com/channel/0029Vb8MLHCHLHQgH3KTTV0K";
@@ -712,10 +722,7 @@ const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZ
 const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
 async function loadData() {
-  const container = document.getElementById("product-container");
-
   try {
-    // 1. Fetch Produk Biasa
     const { data: prodData } = await supabaseClient
       .from("products")
       .select("*")
@@ -723,7 +730,6 @@ async function loadData() {
 
     allProducts = prodData || [];
 
-    // 2. Fetch Item TopUp dari Supabase
     const { data: topupData } = await supabaseClient
       .from("topup_items")
       .select("*")
@@ -932,12 +938,9 @@ function openTopupModal(title, desc, priceStr, rawPrice, serviceCode, gameType =
   const topupLabel = document.getElementById("topupLabel");
 
   topupContainer.style.display = "block";
-  
-  // RESET INPUT SEBELUMNYA
   targetInput.value = "";
   zoneInput.value = "";
 
-  // ATUR LABEL & PLACEHOLDER DINAMIS BERDASARKAN GAME TYPE
   if (gameType === 'MLBB') {
     topupLabel.innerText = "🎯 Masukkan ID & Zone ID MLBB:";
     targetInput.placeholder = "User ID";
