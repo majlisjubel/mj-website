@@ -871,19 +871,28 @@ function openTopupModal(title, desc, priceStr, rawPrice, serviceCode, gameType =
   document.getElementById("modalDesc").innerText = desc;
   
   const topupContainer = document.getElementById("topupInputContainer");
+  const targetInput = document.getElementById("topupTargetId");
   const zoneInput = document.getElementById("topupZoneId");
   const topupLabel = document.getElementById("topupLabel");
 
   topupContainer.style.display = "block";
   
+  // RESET INPUT SEBELUMNYA
+  targetInput.value = "";
+  zoneInput.value = "";
+
+  // ATUR LABEL & PLACEHOLDER DINAMIS BERDASARKAN GAME TYPE
   if (gameType === 'MLBB') {
     topupLabel.innerText = "🎯 Masukkan ID & Zone ID MLBB:";
+    targetInput.placeholder = "User ID";
     zoneInput.style.display = "block";
   } else if (gameType === 'PULSA') {
     topupLabel.innerText = "📱 Masukkan Nomor HP:";
+    targetInput.placeholder = "08xxxxxxxxxx";
     zoneInput.style.display = "none";
   } else {
     topupLabel.innerText = "🎯 Masukkan Username / ID:";
+    targetInput.placeholder = "User ID / Username";
     zoneInput.style.display = "none";
   }
 
