@@ -317,7 +317,6 @@ header{
 .modal h3{ margin-bottom: 10px; font-size: 18px; }
 .modal p{ color: #ccc; font-size: 13px; line-height: 1.6; margin-bottom: 14px; }
 
-/* Input Target ID untuk Game Topup */
 .input-group {
   margin-bottom: 12px;
   display: flex;
@@ -545,7 +544,7 @@ header{
 </div>
 
 <div class="categories">
-  <div class="category active-cat" onclick="filterCategory(this, 'Semua')">Semua</div>
+  <div class="category active-cat" onclick="filterCategory(this, 'Beranda')">Beranda</div>
   <div class="category" onclick="filterCategory(this, 'Top Up')">Top Up MLBB</div>
   <div class="category" onclick="filterCategory(this, 'MLBB')">Akun MLBB</div>
   <div class="category" onclick="filterCategory(this, 'Roblox')">Roblox</div>
@@ -570,28 +569,31 @@ header{
   <div id="nokos-grid" class="product-grid"></div>
 </div>
 
-<div class="review-box">
-  <h3 style="margin-bottom: 12px; color: #fff; text-align: center; font-size: 16px;">⭐ Beri Ulasan Pembelian</h3>
-  
-  <input type="text" id="rev-nama" class="review-input" placeholder="Nama Kamu">
-  
-  <select id="rev-rating" class="review-select">
-    <option value="5">⭐⭐⭐⭐⭐ (5/5) - Sangat Puas</option>
-    <option value="4">⭐⭐⭐⭐ (4/5) - Bagus</option>
-    <option value="3">⭐⭐⭐ (3/5) - Cukup</option>
-    <option value="2">⭐⭐ (2/5) - Kurang</option>
-    <option value="1">⭐ (1/5) - Buruk</option>
-  </select>
-  
-  <textarea id="rev-komentar" class="review-textarea" placeholder="Tuliskan pengalaman atau ulasan kamu..." rows="3"></textarea>
-  
-  <button id="btn-submit-review" class="btn-submit-review" onclick="kirimUlasan()">Kirim Ulasan</button>
-</div>
+<!-- SEKSI ULASAN KHUSUS UNTUK CATEGORY BERANDA -->
+<div id="review-section-wrapper">
+  <div class="review-box">
+    <h3 style="margin-bottom: 12px; color: #fff; text-align: center; font-size: 16px;">⭐ Beri Ulasan Pembelian</h3>
+    
+    <input type="text" id="rev-nama" class="review-input" placeholder="Nama Kamu">
+    
+    <select id="rev-rating" class="review-select">
+      <option value="5">⭐⭐⭐⭐⭐ (5/5) - Sangat Puas</option>
+      <option value="4">⭐⭐⭐⭐ (4/5) - Bagus</option>
+      <option value="3">⭐⭐⭐ (3/5) - Cukup</option>
+      <option value="2">⭐⭐ (2/5) - Kurang</option>
+      <option value="1">⭐ (1/5) - Buruk</option>
+    </select>
+    
+    <textarea id="rev-komentar" class="review-textarea" placeholder="Tuliskan pengalaman atau ulasan kamu..." rows="3"></textarea>
+    
+    <button id="btn-submit-review" class="btn-submit-review" onclick="kirimUlasan()">Kirim Ulasan</button>
+  </div>
 
-<div style="margin: 0 18px 24px;">
-  <div class="section-title" style="margin: 0 0 12px 0;">💬 ULASAN PEMBELI</div>
-  <div id="daftar-ulasan">
-    <p style="color:#aaa; font-size: 13px;">Memuat ulasan...</p>
+  <div style="margin: 0 18px 24px;">
+    <div class="section-title" style="margin: 0 0 12px 0;">💬 ULASAN PEMBELI</div>
+    <div id="daftar-ulasan">
+      <p style="color:#aaa; font-size: 13px;">Memuat ulasan...</p>
+    </div>
   </div>
 </div>
 
@@ -603,9 +605,8 @@ header{
     <h3 id="modalTitle">Detail Produk</h3>
     <p id="modalDesc">Deskripsi produk...</p>
     
-    <!-- Input User ID & Server ID MLBB -->
     <div id="mlbbInputContainer" style="display:none; margin-bottom: 14px;">
-      <label style="font-size: 12px; color: #f05b9b; font-weight: bold; margin-bottom: 6px; display: block;">🎯 masukan ID & Zone ID MLBB:</label>
+      <label style="font-size: 12px; color: #f05b9b; font-weight: bold; margin-bottom: 6px; display: block;">🎯 Masukkan ID & Zone ID MLBB:</label>
       <div class="input-group">
         <input type="number" id="mlbbUserId" class="input-field" placeholder="User ID (misal: 12345678)">
         <input type="number" id="mlbbZoneId" class="input-field" placeholder="Zone ID (misal: 1234)" style="width: 110px;">
@@ -633,7 +634,7 @@ header{
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 let allProducts = [];
-let currentCategory = 'Semua';
+let currentCategory = 'Beranda';
 
 const URL_STOK_CHANNEL = "https://whatsapp.com/channel/0029Vb8MLHCHLHQgH3KTTV0K";
 const URL_TESTI_CHANNEL = "https://whatsapp.com/channel/0029VbDRClmG8l5Clsknh53W";
@@ -641,7 +642,6 @@ const URL_TESTI_CHANNEL = "https://whatsapp.com/channel/0029VbDRClmG8l5Clsknh53W
 let currentProduct = { title: '', desc: '', rawPrice: 0, formattedPrice: '', stock: 0, category: '', isTopUp: false, serviceCode: '' };
 let currentQty = 1;
 
-// LIST PRODUCT TOPUP MLBB DENGAN SERVICE CODE VIP RESELLER & HARGA DISESUAIKAN
 const topupItems = [
   { name: '55 Diamonds MLBB', desc: 'Top Up Fast Process 55 Diamonds MLBB', price: 'Rp 14.000', rawPrice: 14000, serviceCode: 'MLGLOBAL22590-S14', category: 'Top Up' },
   { name: '86 Diamonds MLBB', desc: 'Top Up Fast Process 86 Diamonds MLBB', price: 'Rp 22.000', rawPrice: 22000, serviceCode: 'MLGLOBAL13-S14', category: 'Top Up' }
@@ -686,7 +686,7 @@ function renderTopup(keyword) {
   const topupGrid = document.getElementById("topup-grid");
   const topupSection = document.getElementById("topup-section");
 
-  if (currentCategory !== 'Semua' && currentCategory !== 'Top Up') {
+  if (currentCategory !== 'Beranda' && currentCategory !== 'Top Up') {
     topupSection.style.display = "none";
     return;
   }
@@ -719,7 +719,7 @@ function renderNokos(keyword) {
   const nokosGrid = document.getElementById("nokos-grid");
   const nokosSection = document.getElementById("nokos-section");
 
-  if (currentCategory !== 'Semua' && currentCategory !== 'Nokos') {
+  if (currentCategory !== 'Beranda' && currentCategory !== 'Nokos') {
     nokosSection.style.display = "none";
     return;
   }
@@ -758,7 +758,7 @@ function renderProducts(keyword) {
     const desc = (p.description || "").toLowerCase();
     
     const matchesSearch = name.includes(keyword) || cat.includes(keyword) || desc.includes(keyword);
-    const matchesCat = (currentCategory === "Semua") || cat.includes(currentCategory.toLowerCase()) || name.includes(currentCategory.toLowerCase());
+    const matchesCat = (currentCategory === "Beranda") || cat.includes(currentCategory.toLowerCase()) || name.includes(currentCategory.toLowerCase());
 
     return matchesSearch && matchesCat;
   });
@@ -820,6 +820,14 @@ function renderAll() {
   renderProducts(keyword);
   renderNokos(keyword);
   renderTopup(keyword);
+
+  // Sembunyikan Ulasan jika bukan di halaman Beranda
+  const reviewWrapper = document.getElementById("review-section-wrapper");
+  if (currentCategory === "Beranda") {
+    reviewWrapper.style.display = "block";
+  } else {
+    reviewWrapper.style.display = "none";
+  }
 }
 
 function openTopupModal(title, desc, priceStr, rawPrice, serviceCode) {
@@ -840,7 +848,7 @@ function openTopupModal(title, desc, priceStr, rawPrice, serviceCode) {
   document.getElementById("modalTitle").innerText = title;
   document.getElementById("modalDesc").innerText = desc;
   document.getElementById("mlbbInputContainer").style.display = "block";
-  document.getElementById("qtyBox").style.display = "none"; // Topup per satuan dulu
+  document.getElementById("qtyBox").style.display = "none";
   document.getElementById("modalSecondaryBtn").style.display = "none";
 
   const btnBuy = document.getElementById("modalBuyBtn");
@@ -945,10 +953,8 @@ function updateModalTotal() {
   document.getElementById("totalPriceText").innerText = totalText;
 }
 
-// FUNGSI CHECKOUT UTAMA
 async function handleCheckout() {
   if (currentProduct.isTopUp) {
-    // JIKA ORDER TOP UP DIAMOND MLBB
     const userId = document.getElementById("mlbbUserId").value.trim();
     const zoneId = document.getElementById("mlbbZoneId").value.trim();
 
@@ -963,7 +969,6 @@ async function handleCheckout() {
     btnBuy.innerText = "Menyimpan Pesanan...";
 
     try {
-      // Simpan Ke Database Orders Supabase
       const { data, error } = await supabaseClient
         .from('orders')
         .insert([
@@ -983,7 +988,6 @@ async function handleCheckout() {
         return;
       }
 
-      // Redirect ke WhatsApp untuk Pembayaran
       const textWa = encodeURIComponent(`Halo Admin Majlis Jubel 👋\n\nSaya sudah buat orderan Top Up:\n🔹 Produk: ${currentProduct.title}\n🎯 ID MLBB: ${fullTarget}\n💰 Total: Rp ${currentProduct.rawPrice.toLocaleString("id-ID")}\n\nMohon info QRIS / No Rekening untuk pembayarannya ya!`);
       window.open(`https://wa.me/6285179807522?text=${textWa}`, '_blank');
       
@@ -998,7 +1002,6 @@ async function handleCheckout() {
     }
 
   } else {
-    // JIKA PRODUK NON-TOPUP (WA BIASA)
     let totalText = currentProduct.rawPrice > 0 
       ? `Rp ${(currentProduct.rawPrice * currentQty).toLocaleString("id-ID")} (${currentQty}x)`
       : currentProduct.formattedPrice;
