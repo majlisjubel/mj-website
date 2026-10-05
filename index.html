@@ -545,7 +545,7 @@ header{
 
 <div class="categories">
   <div class="category active-cat" onclick="filterCategory(this, 'Beranda')">Beranda</div>
-  <div class="category" onclick="filterCategory(this, 'Top Up')">Top Up MLBB</div>
+  <div class="category" onclick="filterCategory(this, 'Top Up')">Top Up & Voucher</div>
   <div class="category" onclick="filterCategory(this, 'MLBB')">Akun MLBB</div>
   <div class="category" onclick="filterCategory(this, 'Roblox')">Roblox</div>
   <div class="category" onclick="filterCategory(this, 'Gmail Fresh')">Gmail Fresh</div>
@@ -554,7 +554,7 @@ header{
 </div>
 
 <div id="topup-section" style="margin-top: 10px;">
-  <div class="section-title">💎 TOP UP DIAMOND MLBB INSTAN</div>
+  <div class="section-title">💎 TOP UP GAME & VOUCHER INSTAN</div>
   <div id="topup-grid" class="product-grid"></div>
 </div>
 
@@ -605,11 +605,11 @@ header{
     <h3 id="modalTitle">Detail Produk</h3>
     <p id="modalDesc">Deskripsi produk...</p>
     
-    <div id="mlbbInputContainer" style="display:none; margin-bottom: 14px;">
-      <label style="font-size: 12px; color: #f05b9b; font-weight: bold; margin-bottom: 6px; display: block;">🎯 Masukkan ID & Zone ID MLBB:</label>
+    <div id="topupInputContainer" style="display:none; margin-bottom: 14px;">
+      <label id="topupLabel" style="font-size: 12px; color: #f05b9b; font-weight: bold; margin-bottom: 6px; display: block;">🎯 Masukkan ID & Zone ID / No HP:</label>
       <div class="input-group">
-        <input type="number" id="mlbbUserId" class="input-field" placeholder="User ID (misal: 12345678)">
-        <input type="number" id="mlbbZoneId" class="input-field" placeholder="Zone ID (misal: 1234)" style="width: 110px;">
+        <input type="text" id="topupTargetId" class="input-field" placeholder="User ID / No HP">
+        <input type="text" id="topupZoneId" class="input-field" placeholder="Zone ID" style="width: 110px;">
       </div>
     </div>
 
@@ -639,12 +639,16 @@ let currentCategory = 'Beranda';
 const URL_STOK_CHANNEL = "https://whatsapp.com/channel/0029Vb8MLHCHLHQgH3KTTV0K";
 const URL_TESTI_CHANNEL = "https://whatsapp.com/channel/0029VbDRClmG8l5Clsknh53W";
 
-let currentProduct = { title: '', desc: '', rawPrice: 0, formattedPrice: '', stock: 0, category: '', isTopUp: false, serviceCode: '' };
+let currentProduct = { title: '', desc: '', rawPrice: 0, formattedPrice: '', stock: 0, category: '', isTopUp: false, serviceCode: '', gameType: '' };
 let currentQty = 1;
 
+// Tambahkan atau hapus item topup/voucher di bawah ini!
 const topupItems = [
-  { name: '55 Diamonds MLBB', desc: 'Top Up Fast Process 55 Diamonds MLBB', price: 'Rp 14.000', rawPrice: 14000, serviceCode: 'MLGLOBAL22590-S14', category: 'Top Up' },
-  { name: '86 Diamonds MLBB', desc: 'Top Up Fast Process 86 Diamonds MLBB', price: 'Rp 22.000', rawPrice: 22000, serviceCode: 'MLGLOBAL13-S14', category: 'Top Up' }
+  { name: '55 Diamonds MLBB', desc: 'Top Up Fast Process 55 Diamonds MLBB', price: 'Rp 14.000', rawPrice: 14000, serviceCode: 'MLGLOBAL22590-S14', category: 'Top Up', gameType: 'MLBB' },
+  { name: '86 Diamonds MLBB', desc: 'Top Up Fast Process 86 Diamonds MLBB', price: 'Rp 22.000', rawPrice: 22000, serviceCode: 'MLGLOBAL13-S14', category: 'Top Up', gameType: 'MLBB' }
+  // Contoh Tambah Robux / Pulsa nanti:
+  // { name: '80 Robux', desc: 'Top Up Fast Robux Roblox', price: 'Rp 15.000', rawPrice: 15000, serviceCode: 'ROBUX80', category: 'Top Up', gameType: 'ROBUX' },
+  // { name: 'Pulsa Telkomsel 10k', desc: 'Pulsa Reguler All Operator', price: 'Rp 11.000', rawPrice: 11000, serviceCode: 'PULSA10', category: 'Top Up', gameType: 'PULSA' }
 ];
 
 const nokosItems = [
@@ -701,7 +705,7 @@ function renderTopup(keyword) {
   } else {
     topupSection.style.display = "block";
     topupGrid.innerHTML = filteredTopup.map(item => `
-      <div class="card-product" onclick="openTopupModal('${item.name}', '${item.desc}', '${item.price}', ${item.rawPrice}, '${item.serviceCode}')">
+      <div class="card-product" onclick="openTopupModal('${item.name}', '${item.desc}', '${item.price}', ${item.rawPrice}, '${item.serviceCode}', '${item.gameType}')">
         <div class="card-body">
           <div class="card-header-badge">
             <span class="badge-tag">INSTAN</span>
@@ -821,7 +825,6 @@ function renderAll() {
   renderNokos(keyword);
   renderTopup(keyword);
 
-  // Sembunyikan Ulasan jika bukan di halaman Beranda
   const reviewWrapper = document.getElementById("review-section-wrapper");
   if (currentCategory === "Beranda") {
     reviewWrapper.style.display = "block";
@@ -830,7 +833,7 @@ function renderAll() {
   }
 }
 
-function openTopupModal(title, desc, priceStr, rawPrice, serviceCode) {
+function openTopupModal(title, desc, priceStr, rawPrice, serviceCode, gameType = 'MLBB') {
   currentQty = 1;
   document.getElementById("qtyInput").value = 1;
 
@@ -842,12 +845,30 @@ function openTopupModal(title, desc, priceStr, rawPrice, serviceCode) {
     stock: 999,
     category: 'Top Up',
     isTopUp: true,
-    serviceCode: serviceCode
+    serviceCode: serviceCode,
+    gameType: gameType
   };
 
   document.getElementById("modalTitle").innerText = title;
   document.getElementById("modalDesc").innerText = desc;
-  document.getElementById("mlbbInputContainer").style.display = "block";
+  
+  const topupContainer = document.getElementById("topupInputContainer");
+  const zoneInput = document.getElementById("topupZoneId");
+  const topupLabel = document.getElementById("topupLabel");
+
+  topupContainer.style.display = "block";
+  
+  if (gameType === 'MLBB') {
+    topupLabel.innerText = "🎯 Masukkan ID & Zone ID MLBB:";
+    zoneInput.style.display = "block";
+  } else if (gameType === 'PULSA') {
+    topupLabel.innerText = "📱 Masukkan Nomor HP:";
+    zoneInput.style.display = "none";
+  } else {
+    topupLabel.innerText = "🎯 Masukkan Username / ID:";
+    zoneInput.style.display = "none";
+  }
+
   document.getElementById("qtyBox").style.display = "none";
   document.getElementById("modalSecondaryBtn").style.display = "none";
 
@@ -868,7 +889,7 @@ function openModal(title, desc, priceStr, stock, category) {
 
   currentQty = isAvailable ? 1 : 0;
   document.getElementById("qtyInput").value = currentQty;
-  document.getElementById("mlbbInputContainer").style.display = "none";
+  document.getElementById("topupInputContainer").style.display = "none";
   
   const rawNum = parseInt(priceStr.replace(/[^0-9]/g, ''), 10) || 0;
   
@@ -955,15 +976,23 @@ function updateModalTotal() {
 
 async function handleCheckout() {
   if (currentProduct.isTopUp) {
-    const userId = document.getElementById("mlbbUserId").value.trim();
-    const zoneId = document.getElementById("mlbbZoneId").value.trim();
+    const targetId = document.getElementById("topupTargetId").value.trim();
+    const zoneId = document.getElementById("topupZoneId").value.trim();
 
-    if (!userId || !zoneId) {
-      alert("Harap masukkan User ID dan Zone ID MLBB kamu secara lengkap!");
+    if (!targetId) {
+      alert("Harap masukkan ID / Nomor tujuan kamu!");
       return;
     }
 
-    const fullTarget = `${userId}(${zoneId})`;
+    let fullTarget = targetId;
+    if (currentProduct.gameType === 'MLBB') {
+      if (!zoneId) {
+        alert("Harap masukkan Zone ID MLBB kamu!");
+        return;
+      }
+      fullTarget = `${targetId}(${zoneId})`;
+    }
+
     const btnBuy = document.getElementById("modalBuyBtn");
     btnBuy.disabled = true;
     btnBuy.innerText = "Menyimpan Pesanan...";
@@ -988,7 +1017,7 @@ async function handleCheckout() {
         return;
       }
 
-      const textWa = encodeURIComponent(`Halo Admin Majlis Jubel 👋\n\nSaya sudah buat orderan Top Up:\n🔹 Produk: ${currentProduct.title}\n🎯 ID MLBB: ${fullTarget}\n💰 Total: Rp ${currentProduct.rawPrice.toLocaleString("id-ID")}\n\nMohon info QRIS / No Rekening untuk pembayarannya ya!`);
+      const textWa = encodeURIComponent(`Halo Admin Majlis Jubel 👋\n\nSaya sudah buat orderan Top Up:\n🔹 Produk: ${currentProduct.title}\n🎯 ID/Tujuan: ${fullTarget}\n💰 Total: Rp ${currentProduct.rawPrice.toLocaleString("id-ID")}\n\nMohon info QRIS / No Rekening untuk pembayarannya ya!`);
       window.open(`https://wa.me/6285179807522?text=${textWa}`, '_blank');
       
       closeModal();
@@ -1006,7 +1035,7 @@ async function handleCheckout() {
       ? `Rp ${(currentProduct.rawPrice * currentQty).toLocaleString("id-ID")} (${currentQty}x)`
       : currentProduct.formattedPrice;
 
-    const textWa = encodeURIComponent(`Halo Admin Majlis Jubel 👋, saya mau order produk berikut:\n\n🔹 Layanan: ${currentProduct.title}\n📦 Jumlah: ${currentQty}x\n💰 Total: ${totalText}\n\nApakah stoknya ready? Mohon diproses ya, terima kasih!`);
+    const textWa = encodeURIComponent(`Halo Admin Majlis Jubel 👋, saya mau order produk berikut:\n\n🔹 Layanan: ${currentProduct.title}\n📦 Jumlah: ${currentQty}x\n💰 Total: ${totalText}\n\nApakah stoknya ready? Mohon dipproses ya, terima kasih!`);
     window.open(`https://wa.me/6285179807522?text=${textWa}`, '_blank');
   }
 }
