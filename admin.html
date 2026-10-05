@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Panel - Majlis Jubel Top Up</title>
+<style>
+  body { background: #0d0b10; color: #fff; font-family: system-ui, sans-serif; padding: 15px; }
+  h2 { color: #f05b9b; text-align: center; }
+  .order-card { background: #1c1822; border: 1px solid #3c2a42; border-radius: 12px; padding: 14px; margin-bottom: 12px; }
+  .order-info { font-size: 13px; line-height: 1.6; color: #ddd; }
+  .badge { display: inline-block; padding: 3px 8px; border-radius: 6px; font-size: 11px; font-weight: bold; }
+  .pending { background: #f3a833; color: #000; }
+  .sukses { background: #25d366; color: #000; }
+  .gagal { background: #ff4b4b; color: #fff; }
+  .btn-api { width: 100%; padding: 10px; margin-top: 10px; background: #f05b9b; border: none; color: white; border-radius: 8px; font-weight: bold; cursor: pointer; }
+  .btn-api:disabled { background: #555; }
+</style>
+</head>
+<body>
+
+<h2>⚡ Panel Admin Orders</h2>
+<div id="orderList">Memuat orderan masuk...</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+// CREDENTIAL SUPABASE
+const SUPABASE_URL = "https://sgadlmoskhfyyksobggk.supabase.co";
+const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNnYWRsbW9za2hmeXlrc29iZ2drIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTA5NzcxNzksImV4cCI6MjEwNjU1MzE3OX0.XASgEjWt-PEK0jsFAkncDGfQ7Tu8JHDtW3eHIqn0mwk";
+const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+// CREDENTIAL VIP RESELLER (ISI DENGAN DATA DARI ACC VIP KAMU)
+const VIP_API_ID = "0blISCkx";
+const VIP_API_KEY = "hggJanLQ46vxxvtBbxBM4veHRnkF15nNuE4E5Fvkg7A26avjnch3HNJIpxfANZUa";
+
+async function loadOrders() {
+  const container = document.getElementById("orderList");
+  const { data: orders, error } = await supabaseClient
+    .from('orders')
+    .select('*')
+    .order('created_at', { ascending: false });
+
+  if (error || !orders || orders.length === 0) {
+    container.innerHTML = '<p style="color:#aaa; text-align:center;">Belum ada pesanan masuk.</p>';
+    return;
+  }
+
+  container.innerHTML = orders.map(o => `
+    <div class="order-card">
+      <div class="order-info">
+        <strong>[#${o.id}] ${o.nama_produk}</strong><br>
+        🎯 Target ID: <strong style="color:#f3a833;">${o.target_id}</strong><br>
+        💰 Total: Rp ${Number(o.harga_total).toLocaleString('id-ID')}<br>
+        Status: <span class="badge ${o.status}">${o.status.toUpperCase()}</span>
+      </div>
+      ${o.status === 'pending' ? `
+        <button class="btn-api" onclick="processOrder(${o.id}, '${o.kode_layanan}', '${o.target_id}')">
+          ⚡ PROSES VIA API VIP RESELLER
+        </button>
+      ` : ''}
+    </div>
+  `).join('');
+}
+
+async function processOrder(orderId, serviceCode, targetId) {
+  if (!confirm(`Proses order #${orderId} ke ID ${targetId}?`)) return;
+
+  const btn = event.target;
+  btn.disabled = true;
+  btn.innerText = "Mengirim Request API...";
+
+  try {
+    // FORM DATA KE API VIP RESELLER (PREPAID)
+    const formData = new URLSearchParams();
+    formData.append("key", VIP_API_KEY);
+    formData.append("sign", VIP_API_ID); // Biasanya dikombinasikan MD5 signature
+    formData.append("type", "order");
+    formData.append("service", serviceCode);
+    formData.append("data_no", targetId);
+
+    const response = await fetch("https://vip-reseller.co.id/api/prepaid", {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: formData
+    });
+
+    const resData = await response.json();
+
+    if (resData.result) {
+      alert("✅ Transaksi Sukses Diproses oleh VIP Reseller!\nTrx ID: " + resData.data.trxid);
+      await supabaseClient.from('orders').update({ status: 'sukses' }).eq('id', orderId);
+    } else {
+      alert("❌ Gagal Kirim API: " + (resData.message || "Saldo tidak cukup / Kode salah"));
+      await supabaseClient.from('orders').update({ status: 'gagal' }).eq('id', orderId);
+    }
+    loadOrders();
+
+  } catch (err) {
+    alert("Terjadi Kendala Koneksi API: " + err.message);
+    btn.disabled = false;
+    btn.innerText = "⚡ PROSES VIA API VIP RESELLER";
+  }
+}
+
+document.addEventListener("DOMContentLoaded", loadOrders);
+</script>
+</body>
+  </html>
+  
