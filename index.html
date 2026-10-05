@@ -569,7 +569,6 @@ header{
   <div id="nokos-grid" class="product-grid"></div>
 </div>
 
-<!-- SEKSI ULASAN KHUSUS UNTUK CATEGORY BERANDA -->
 <div id="review-section-wrapper">
   <div class="review-box">
     <h3 style="margin-bottom: 12px; color: #fff; text-align: center; font-size: 16px;">⭐ Beri Ulasan Pembelian</h3>
@@ -634,6 +633,7 @@ header{
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 let allProducts = [];
+let topupItems = []; // Sekarang diisi otomatis dari Supabase
 let currentCategory = 'Beranda';
 
 const URL_STOK_CHANNEL = "https://whatsapp.com/channel/0029Vb8MLHCHLHQgH3KTTV0K";
@@ -641,15 +641,6 @@ const URL_TESTI_CHANNEL = "https://whatsapp.com/channel/0029VbDRClmG8l5Clsknh53W
 
 let currentProduct = { title: '', desc: '', rawPrice: 0, formattedPrice: '', stock: 0, category: '', isTopUp: false, serviceCode: '', gameType: '' };
 let currentQty = 1;
-
-// Tambahkan atau hapus item topup/voucher di bawah ini!
-const topupItems = [
-  { name: '55 Diamonds MLBB', desc: 'Top Up Fast Process 55 Diamonds MLBB', price: 'Rp 14.000', rawPrice: 14000, serviceCode: 'MLGLOBAL22590-S14', category: 'Top Up', gameType: 'MLBB' },
-  { name: '86 Diamonds MLBB', desc: 'Top Up Fast Process 86 Diamonds MLBB', price: 'Rp 22.000', rawPrice: 22000, serviceCode: 'MLGLOBAL13-S14', category: 'Top Up', gameType: 'MLBB' }
-  // Contoh Tambah Robux / Pulsa nanti:
-  // { name: '80 Robux', desc: 'Top Up Fast Robux Roblox', price: 'Rp 15.000', rawPrice: 15000, serviceCode: 'ROBUX80', category: 'Top Up', gameType: 'ROBUX' },
-  // { name: 'Pulsa Telkomsel 10k', desc: 'Pulsa Reguler All Operator', price: 'Rp 11.000', rawPrice: 11000, serviceCode: 'PULSA10', category: 'Top Up', gameType: 'PULSA' }
-];
 
 const nokosItems = [
   { name: 'Nokos WhatsApp', desc: 'Nomor Kosong / OTP Instan WhatsApp Fresh', price: 'Rp 6.000', keywords: 'nokos whatsapp wa', stock: 99, category: 'Nokos' },
@@ -664,25 +655,41 @@ const SUPABASE_URL = "https://sgadlmoskhfyyksobggk.supabase.co";
 const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNnYWRsbW9za2hmeXlrc29iZ2drIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTA5NzcxNzksImV4cCI6MjEwNjU1MzE3OX0.XASgEjWt-PEK0jsFAkncDGfQ7Tu8JHDtW3eHIqn0mwk";
 const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-async function loadProducts() {
+async function loadData() {
   const container = document.getElementById("product-container");
 
   try {
-    const { data, error } = await supabaseClient
+    // 1. Fetch Produk Biasa
+    const { data: prodData } = await supabaseClient
       .from("products")
       .select("*")
       .order("id", { ascending: false });
 
-    if (error) {
-      container.innerHTML = '<p style="color:#ff6b99;padding:10px; grid-column: 1/-1;">Gagal memuat produk dari database.</p>';
-      return;
+    allProducts = prodData || [];
+
+    // 2. Fetch Item TopUp dari Supabase
+    const { data: topupData } = await supabaseClient
+      .from("topup_items")
+      .select("*")
+      .order("id", { ascending: true });
+
+    if (topupData) {
+      topupItems = topupData.map(item => ({
+        name: item.name,
+        desc: item.description || '',
+        price: item.price_display || `Rp ${Number(item.raw_price).toLocaleString('id-ID')}`,
+        rawPrice: item.raw_price,
+        serviceCode: item.service_code,
+        category: item.category || 'Top Up',
+        gameType: item.game_type || 'MLBB',
+        stock: item.stock !== undefined ? item.stock : 999
+      }));
     }
 
-    allProducts = data || [];
     renderAll();
 
   } catch (err) {
-    console.error(err);
+    console.error("Gagal memuat data:", err);
   }
 }
 
@@ -704,18 +711,24 @@ function renderTopup(keyword) {
     topupSection.style.display = "none";
   } else {
     topupSection.style.display = "block";
-    topupGrid.innerHTML = filteredTopup.map(item => `
-      <div class="card-product" onclick="openTopupModal('${item.name}', '${item.desc}', '${item.price}', ${item.rawPrice}, '${item.serviceCode}', '${item.gameType}')">
-        <div class="card-body">
-          <div class="card-header-badge">
-            <span class="badge-tag">INSTAN</span>
-            <span class="nokos-badge-game">TOP UP</span>
+    topupGrid.innerHTML = filteredTopup.map(item => {
+      const isAvailable = item.stock > 0;
+      const badgeClass = isAvailable ? "badge-tag" : "badge-tag badge-soldout";
+      const badgeText = isAvailable ? "INSTAN" : "SOLD OUT";
+
+      return `
+        <div class="card-product" onclick="openTopupModal('${item.name}', '${item.desc}', '${item.price}', ${item.rawPrice}, '${item.serviceCode}', '${item.gameType}', ${item.stock})">
+          <div class="card-body">
+            <div class="card-header-badge">
+              <span class="${badgeClass}">${badgeText}</span>
+              <span class="nokos-badge-game">${item.gameType}</span>
+            </div>
+            <h3 class="card-title">💎 ${item.name}</h3>
+            <div class="card-price">${item.price}</div>
           </div>
-          <h3 class="card-title">💎 ${item.name}</h3>
-          <div class="card-price">${item.price}</div>
         </div>
-      </div>
-    `).join("");
+      `;
+    }).join("");
   }
 }
 
@@ -833,7 +846,12 @@ function renderAll() {
   }
 }
 
-function openTopupModal(title, desc, priceStr, rawPrice, serviceCode, gameType = 'MLBB') {
+function openTopupModal(title, desc, priceStr, rawPrice, serviceCode, gameType = 'MLBB', stock = 999) {
+  if (stock <= 0) {
+    alert("Maaf, stok item topup ini sedang kosong!");
+    return;
+  }
+
   currentQty = 1;
   document.getElementById("qtyInput").value = 1;
 
@@ -842,7 +860,7 @@ function openTopupModal(title, desc, priceStr, rawPrice, serviceCode, gameType =
     desc: desc,
     rawPrice: rawPrice,
     formattedPrice: priceStr,
-    stock: 999,
+    stock: stock,
     category: 'Top Up',
     isTopUp: true,
     serviceCode: serviceCode,
@@ -1035,7 +1053,7 @@ async function handleCheckout() {
       ? `Rp ${(currentProduct.rawPrice * currentQty).toLocaleString("id-ID")} (${currentQty}x)`
       : currentProduct.formattedPrice;
 
-    const textWa = encodeURIComponent(`Halo Admin Majlis Jubel 👋, saya mau order produk berikut:\n\n🔹 Layanan: ${currentProduct.title}\n📦 Jumlah: ${currentQty}x\n💰 Total: ${totalText}\n\nApakah stoknya ready? Mohon dipproses ya, terima kasih!`);
+    const textWa = encodeURIComponent(`Halo Admin Majlis Jubel 👋, saya mau order produk berikut:\n\n🔹 Layanan: ${currentProduct.title}\n📦 Jumlah: ${currentQty}x\n💰 Total: ${totalText}\n\nApakah stoknya ready? Mohon diproses ya, terima kasih!`);
     window.open(`https://wa.me/6285179807522?text=${textWa}`, '_blank');
   }
 }
@@ -1113,7 +1131,7 @@ async function kirimUlasan() {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-  loadProducts();
+  loadData();
   loadReviews();
 });
 </script>
