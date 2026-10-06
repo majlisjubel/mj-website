@@ -609,6 +609,7 @@ header{
   <input id="searchInput" type="text" placeholder="Cari akun atau produk...">
 </div>
 
+<!-- KATEGORI PRODUK & TOMBOL SELL -->
 <div class="categories">
   <div class="category active-cat" onclick="filterCategory(this, 'Beranda')">Beranda</div>
   <div class="category" onclick="filterCategory(this, 'Top Up')">Top Up & Voucher</div>
@@ -616,7 +617,7 @@ header{
   <div class="category" onclick="filterCategory(this, 'Roblox')">Roblox</div>
   <div class="category" onclick="filterCategory(this, 'Gmail Fresh')">Gmail Fresh</div>
   <div class="category" onclick="filterCategory(this, 'Nokos')">Nokos</div>
-  <div class="category" onclick="filterCategory(this, 'Barang Bekas')">Barang Bekas</div>
+  <div class="category" style="border-color: #f05b9b; color: #f05b9b; font-weight: bold;" onclick="openSellModal()">💰 Sell / Jual Akun</div>
 </div>
 
 <div id="topup-section" style="margin-top: 10px;">
@@ -696,11 +697,46 @@ header{
   </div>
 </div>
 
+<!-- MODAL FITUR SELL / JUAL AKUN KE ADMIN -->
+<div id="sellModal" class="modal">
+  <div class="modal-content">
+    <h3 style="color: #f05b9b; text-align: center;">💰 Jual Akun / Item ke Admin</h3>
+    
+    <div style="background: rgba(16, 185, 129, 0.15); border: 1px solid #10b981; padding: 10px; border-radius: 12px; margin: 12px 0; text-align: center;">
+      <span style="font-size: 11px; color: #a7f3d0; display: block;">Dana Restok Admin Tersedia:</span>
+      <strong style="font-size: 16px; color: #34d399;" id="danaRestokDisplay">Memuat...</strong>
+    </div>
+
+    <p style="font-size: 12px; color: #aaa; margin-bottom: 12px; text-align: center;">Silakan isi formulir di bawah jika ingin menjual akun/item kamu ke Admin.</p>
+
+    <div style="display: flex; flex-direction: column; gap: 10px;">
+      <div>
+        <label style="font-size: 11px; color: #ddd; font-weight: bold; margin-bottom: 4px; display: block;">Item / Game yang Mau Dijual:</label>
+        <input type="text" id="sellItemName" class="input-field" placeholder="Contoh: Akun MLBB / Roblox / Gmail">
+      </div>
+
+      <div>
+        <label style="font-size: 11px; color: #ddd; font-weight: bold; margin-bottom: 4px; display: block;">Deskripsi Spek Akun:</label>
+        <textarea id="sellItemDesc" class="input-field" style="height: 80px; resize: vertical;" placeholder="Contoh: Skin 120+, Hero Max, Log Moonton Sepaket Email Mati"></textarea>
+      </div>
+
+      <div>
+        <label style="font-size: 11px; color: #ddd; font-weight: bold; margin-bottom: 4px; display: block;">Harga yang Ditawarkan (Rp):</label>
+        <input type="number" id="sellItemPrice" class="input-field" placeholder="Contoh: 150000">
+      </div>
+    </div>
+
+    <button onclick="submitSellToWA()" class="btn-buy" style="margin-top: 14px; background: #25d366;">🚀 Kirim Penawaran ke WA</button>
+    <span class="btn-close" onclick="closeSellModal()">Batal / Tutup</span>
+  </div>
+</div>
+
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 let allProducts = [];
 let topupItems = [];
 let currentCategory = 'Beranda';
+let danaRestokAdmin = "Rp 0";
 
 const URL_STOK_CHANNEL = "https://whatsapp.com/channel/0029Vb8MLHCHLHQgH3KTTV0K";
 const URL_TESTI_CHANNEL = "https://whatsapp.com/channel/0029VbDRClmG8l5Clsknh53W";
@@ -753,6 +789,63 @@ async function loadData() {
   } catch (err) {
     console.error("Gagal memuat data:", err);
   }
+}
+
+// FUNGSI SUPABASE FITUR SELL / DANA RESTOK
+async function fetchDanaRestok() {
+  try {
+    const { data, error } = await supabaseClient
+      .from('settings')
+      .select('value')
+      .eq('key', 'dana_restok')
+      .single();
+
+    if (data && data.value) {
+      const nominal = Number(data.value) || 0;
+      danaRestokAdmin = "Rp " + nominal.toLocaleString("id-ID");
+    } else {
+      danaRestokAdmin = "Rp 0";
+    }
+  } catch (err) {
+    console.error("Gagal mengambil dana restok:", err);
+    danaRestokAdmin = "Rp 0";
+  }
+}
+
+async function openSellModal() {
+  document.getElementById("danaRestokDisplay").innerText = "Memuat...";
+  document.getElementById("sellModal").style.display = "flex";
+  
+  await fetchDanaRestok();
+  document.getElementById("danaRestokDisplay").innerText = danaRestokAdmin;
+}
+
+function closeSellModal() {
+  document.getElementById("sellModal").style.display = "none";
+}
+
+function submitSellToWA() {
+  const item = document.getElementById("sellItemName").value.trim();
+  const desc = document.getElementById("sellItemDesc").value.trim();
+  const price = document.getElementById("sellItemPrice").value.trim();
+
+  if (!item || !desc || !price) {
+    alert("Harap lengkapi semua kolom penawaran!");
+    return;
+  }
+
+  const priceFormatted = Number(price).toLocaleString("id-ID");
+
+  const textWA = encodeURIComponent(
+    `Halo Admin Majlis Jubel 👋\n\nSaya mau nawarin/jual akun/item nih:\n\n` +
+    `📌 *Item/Game:* ${item}\n` +
+    `📝 *Deskripsi Spek:* ${desc}\n` +
+    `💰 *Harga Penawaran:* Rp ${priceFormatted}\n\n` +
+    `Apakah Admin berminat menampung/restok? Terima kasih!`
+  );
+
+  window.open(`https://wa.me/6285179807522?text=${textWA}`, '_blank');
+  closeSellModal();
 }
 
 function renderTopup(keyword) {
