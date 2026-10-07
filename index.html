@@ -1,317 +1,1300 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Toko Digital</title>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      font-family: Arial, sans-serif;
-    }
-    body {
-      background-color: #f4f6f9;
-      padding: 20px;
-      color: #333;
-    }
-    .container {
-      max-width: 1000px;
-      margin: 0 auto;
-    }
-    .section-title {
-      font-size: 1.2rem;
-      margin: 20px 0 10px;
-      font-weight: bold;
-    }
-    .grid-container {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-      gap: 15px;
-    }
-    .card-product {
-      background: #fff;
-      border-radius: 8px;
-      overflow: hidden;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-      cursor: pointer;
-      transition: transform 0.2s;
-    }
-    .card-product:hover {
-      transform: translateY(-3px);
-    }
-    .card-image-wrapper {
-      position: relative;
-      width: 100%;
-      height: 140px;
-      background: #eee;
-    }
-    .card-img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-    .badge-game {
-      position: absolute;
-      bottom: 8px;
-      left: 8px;
-      background: rgba(0,0,0,0.7);
-      color: #fff;
-      padding: 3px 8px;
-      font-size: 0.75rem;
-      border-radius: 4px;
-    }
-    .card-body {
-      padding: 12px;
-    }
-    .card-header-badge {
-      display: flex;
-      justify-content: space-between;
-      margin-bottom: 8px;
-    }
-    .badge-tag {
-      background: #e8f5e9;
-      color: #2e7d32;
-      font-size: 0.7rem;
-      padding: 2px 6px;
-      border-radius: 4px;
-      font-weight: bold;
-    }
-    .badge-soldout {
-      background: #ffebee;
-      color: #c62828;
-    }
-    .nokos-badge-game {
-      font-size: 0.7rem;
-      color: #666;
-    }
-    .card-title {
-      font-size: 0.95rem;
-      margin-bottom: 6px;
-    }
-    .card-price {
-      font-weight: bold;
-      color: #007bff;
-    }
-    
-    /* Modal Styling */
-    .modal {
-      display: none;
-      position: fixed;
-      top: 0; left: 0; width: 100%; height: 100%;
-      background: rgba(0,0,0,0.5);
-      align-items: center;
-      justify-content: center;
-      z-index: 1000;
-    }
-    .modal.active {
-      display: flex;
-    }
-    .modal-content {
-      background: #fff;
-      padding: 20px;
-      border-radius: 8px;
-      max-width: 400px;
-      width: 90%;
-      position: relative;
-    }
-    .close-btn {
-      position: absolute;
-      top: 10px; right: 15px;
-      font-size: 1.5rem;
-      cursor: pointer;
-    }
-    .modal-title { margin-bottom: 10px; }
-    .modal-price { font-size: 1.2rem; color: #007bff; font-weight: bold; margin-bottom: 10px; }
-    .modal-desc { font-size: 0.9rem; color: #555; margin-bottom: 15px; white-space: pre-wrap; }
-    .btn-buy {
-      display: block;
-      width: 100%;
-      padding: 10px;
-      background: #25d366;
-      color: #fff;
-      text-align: center;
-      text-decoration: none;
-      border-radius: 5px;
-      font-weight: bold;
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MJ - Majlis Jubel Marketplace</title>
+
+<style>
+*{
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body{
+  background: linear-gradient(rgba(13,11,16,0.85), rgba(13,11,16,0.95)),
+    url("https://raw.githubusercontent.com/oyekrani-sketch/mj-website/dc71dc504799d5b16c702470f0767ea4111604ec/file_00000000e9b8821188dab8708a1fda9c.png") center top / cover;
+  color: white;
+  padding-bottom: 100px;
+  font-family: system-ui, -apple-system, sans-serif;
+}
+
+.container{
+  max-width: 520px;
+  margin: auto;
+}
+
+header{
+  margin: 12px 14px;
+  padding: 10px 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  background: rgba(28,24,32,0.65);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 22px;
+  backdrop-filter: blur(12px);
+}
+
+.logo-img{
+  width: 75px;
+  height: 75px;
+  object-fit: contain;
+  border-radius: 14px;
+  flex-shrink: 0;
+}
+
+.header-links {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  width: 100%;
+}
+
+.header-btn {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  padding: 6px 10px;
+  border-radius: 10px;
+  color: #fff;
+  text-decoration: none;
+  font-size: 11px;
+  font-weight: 600;
+  transition: all 0.2s;
+}
+
+.header-btn:hover {
+  background: rgba(240, 91, 155, 0.2);
+  border-color: #f05b9b;
+  color: #f05b9b;
+}
+
+.header-btn .btn-tag {
+  font-size: 9px;
+  padding: 2px 5px;
+  border-radius: 4px;
+  background: #25d366;
+  color: #000;
+  font-weight: bold;
+}
+
+/* BANNER REKBER COMPACT */
+.rekber-banner {
+  margin: 12px 14px;
+  background: linear-gradient(135deg, rgba(6, 78, 59, 0.85), rgba(15, 23, 42, 0.95));
+  border: 1px solid rgba(16, 185, 129, 0.35);
+  border-radius: 16px;
+  padding: 10px 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  backdrop-filter: blur(8px);
+}
+
+.rekber-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 1;
+}
+
+.rekber-badge-fee {
+  font-size: 9px;
+  background: rgba(16, 185, 129, 0.2);
+  color: #34d399;
+  border: 1px solid rgba(16, 185, 129, 0.4);
+  padding: 1px 6px;
+  border-radius: 6px;
+  font-weight: bold;
+}
+
+.btn-rekber {
+  background: #10b981;
+  color: #064e3b;
+  padding: 7px 12px;
+  border-radius: 10px;
+  font-size: 11px;
+  font-weight: bold;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: 0.2s;
+}
+
+.btn-rekber:hover {
+  background: #34d399;
+}
+
+.hero-section {
+  margin: 18px 18px 8px;
+  text-align: center;
+}
+
+.hero-title {
+  font-size: 20px;
+  font-weight: 800;
+  color: #ffffff;
+  letter-spacing: 0.5px;
+  margin-bottom: 12px;
+}
+
+.hero-title span {
+  color: #f05b9b;
+}
+
+.quote-box {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px dashed rgba(240, 91, 155, 0.3);
+  padding: 12px 14px;
+  border-radius: 14px;
+  margin-top: 6px;
+}
+
+.arabic-quote {
+  font-size: 16px;
+  line-height: 1.8;
+  color: #f3a833;
+  font-family: 'Amiri', 'Traditional Arabic', serif;
+  margin-bottom: 6px;
+  direction: rtl;
+}
+
+.hero-subtitle {
+  font-size: 11px;
+  color: #d1c8d1;
+  line-height: 1.5;
+  font-style: italic;
+}
+
+.search{
+  margin: 14px 18px;
+  padding: 14px 16px;
+  background: #1d1722;
+  border: 1px solid #3c2a42;
+  border-radius: 18px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.search input{
+  width: 100%;
+  background: none;
+  border: none;
+  outline: none;
+  color: white;
+  font-size: 14px;
+}
+
+.categories{
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding: 0 18px 16px;
+  scrollbar-width: none;
+}
+
+.category{
+  white-space: nowrap;
+  background: rgba(28, 24, 32, 0.9);
+  border: 1px solid rgba(255,255,255,0.1);
+  padding: 8px 14px;
+  border-radius: 18px;
+  color: #b9afb9;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.category.active-cat{
+  background: rgba(245,91,155,0.2);
+  border-color: #f579aa;
+  color: #f579aa;
+  font-weight: bold;
+}
+
+.section-title{
+  margin: 16px 18px 14px;
+  font-size: 16px;
+  font-weight: bold;
+  letter-spacing: 0.5px;
+}
+
+.product-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  padding: 0 18px;
+}
+
+.card-product {
+  background-color: #18151c;
+  border-radius: 18px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid rgba(255,255,255,0.08);
+  cursor: pointer;
+  transition: transform 0.2s, border-color 0.2s;
+}
+
+.card-product:hover {
+  transform: translateY(-3px);
+  border-color: #f05b9b;
+}
+
+.card-image-wrapper {
+  position: relative;
+  width: 100%;
+  padding-top: 100%;
+  background: #251e2b;
+}
+
+.card-img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.badge-game {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(4px);
+  color: #ffffff;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 3px 7px;
+  border-radius: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.nokos-badge-game {
+  background: rgba(255, 255, 255, 0.1);
+  color: #ffffff;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 3px 7px;
+  border-radius: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.card-header-badge {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 6px;
+}
+
+.card-body {
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  flex-grow: 1;
+}
+
+.badge-tag {
+  align-self: flex-start;
+  background: rgba(243, 168, 51, 0.15);
+  color: #f3a833;
+  border: 1px solid #f3a833;
+  font-size: 9px;
+  font-weight: 800;
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+.badge-soldout {
+  background: rgba(255, 75, 75, 0.15) !important;
+  color: #ff4b4b !important;
+  border-color: #ff4b4b !important;
+}
+
+.card-title {
+  color: #ffffff;
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.35;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.card-price {
+  color: #f05b9b;
+  font-size: 14px;
+  font-weight: 800;
+  margin-top: auto;
+  padding-top: 4px;
+}
+
+.modal{
+  display: none;
+  position: fixed;
+  top: 0; left: 0; width: 100%; height: 100%;
+  background: rgba(0,0,0,0.8);
+  backdrop-filter: blur(6px);
+  z-index: 999;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.modal-content{
+  background: #1c1822;
+  border: 1px solid #f05b9b;
+  border-radius: 20px;
+  padding: 20px;
+  max-width: 400px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.modal h3{ margin-bottom: 10px; font-size: 18px; }
+.modal p{ color: #ccc; font-size: 13px; line-height: 1.6; margin-bottom: 14px; }
+
+.input-group {
+  margin-bottom: 12px;
+  display: flex;
+  gap: 8px;
+}
+
+.input-field {
+  width: 100%;
+  padding: 10px 12px;
+  background: #18151c;
+  border: 1px solid #3c2a42;
+  border-radius: 10px;
+  color: #fff;
+  font-size: 13px;
+  outline: none;
+}
+
+.input-field:focus {
+  border-color: #f05b9b;
+}
+
+.qty-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  padding: 8px 12px;
+  border-radius: 12px;
+  margin-bottom: 16px;
+}
+
+.qty-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: #ddd;
+}
+
+.qty-controls {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.qty-btn {
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
+  border: 1px solid #f05b9b;
+  background: rgba(240, 91, 155, 0.15);
+  color: #fff;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: 0.2s;
+}
+
+.qty-input {
+  width: 40px;
+  text-align: center;
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 14px;
+  font-weight: bold;
+  outline: none;
+}
+
+.total-price-text {
+  font-size: 14px;
+  color: #f05b9b;
+  font-weight: bold;
+  margin-bottom: 14px;
+  display: block;
+}
+
+.btn-buy{
+  display: block;
+  width: 100%;
+  text-align: center;
+  background: #25d366;
+  color: white;
+  padding: 12px;
+  border: none;
+  border-radius: 12px;
+  font-weight: bold;
+  margin-bottom: 8px;
+  font-size: 13px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.btn-buy:disabled {
+  background: #555;
+  cursor: not-allowed;
+}
+
+.btn-secondary {
+  display: block;
+  text-align: center;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #f3a833;
+  padding: 10px;
+  border-radius: 12px;
+  text-decoration: none;
+  font-weight: bold;
+  font-size: 12px;
+}
+
+.btn-close{
+  display: block;
+  text-align: center;
+  margin-top: 10px;
+  color: #aaa;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.review-box {
+  background: rgba(28,24,32,0.85);
+  padding: 16px;
+  border-radius: 18px;
+  margin: 24px 18px 12px;
+  border: 1px solid rgba(255,255,255,0.1);
+}
+
+.review-input, .review-select, .review-textarea {
+  width: 100%;
+  padding: 10px 12px;
+  margin-bottom: 10px;
+  border-radius: 10px;
+  border: 1px solid #3c2a42;
+  background: #18151c;
+  color: #fff;
+  font-size: 13px;
+  box-sizing: border-box;
+  outline: none;
+}
+
+.review-textarea {
+  resize: vertical;
+}
+
+.btn-submit-review {
+  width: 100%;
+  padding: 12px;
+  background: #f05b9b;
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  font-weight: bold;
+  font-size: 13px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.btn-submit-review:hover {
+  background: #d84885;
+}
+
+.review-card {
+  background: rgba(255,255,255,0.04);
+  padding: 12px 14px;
+  border-radius: 12px;
+  margin-bottom: 10px;
+  border: 1px solid rgba(255,255,255,0.06);
+}
+
+.review-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-weight: bold;
+  font-size: 13px;
+  color: #f3a833;
+  margin-bottom: 6px;
+}
+
+.review-card-text {
+  color: #ddd;
+  font-size: 13px;
+  line-height: 1.4;
+}
+</style>
 </head>
 <body>
 
-  <div class="container">
-    <div id="other-products-title" class="section-title">Daftar Produk</div>
-    <div id="product-container" class="grid-container"></div>
-  </div>
+<div class="container">
 
-  <!-- Modal Produk -->
-  <div id="product-modal" class="modal">
-    <div class="modal-content">
-      <span class="close-btn" onclick="closeModal()">&times;</span>
-      <h3 id="modal-title" class="modal-title"></h3>
-      <div id="modal-price" class="modal-price"></div>
-      <p id="modal-desc" class="modal-desc"></p>
-      <a id="modal-buy-btn" href="#" target="_blank" class="btn-buy">Beli via WhatsApp</a>
+<header>
+  <img class="logo-img" src="https://raw.githubusercontent.com/oyekrani-sketch/mj-website/69f7daa3eed28454cb5731eaa680edc6a6673915/1790943925043.jpg" alt="Majlis Jubel Logo">
+  
+  <div class="header-links">
+    <a href="https://chat.whatsapp.com/DtjI7EGXUBqIIisy0bPIIZ" target="_blank" class="header-btn">
+      <span>👥 Group GB WA</span>
+      <span class="btn-tag">JOIN</span>
+    </a>
+    <a href="https://whatsapp.com/channel/0029Vb8MLHCHLHQgH3KTTV0K" target="_blank" class="header-btn">
+      <span>📢 Saluran Stok</span>
+      <span class="btn-tag">CEK</span>
+    </a>
+    <a href="https://whatsapp.com/channel/0029VbDRClmG8l5Clsknh53W" target="_blank" class="header-btn">
+      <span>⭐ Saluran Testimoni</span>
+      <span class="btn-tag">TESTI</span>
+    </a>
+  </div>
+</header>
+
+<!-- BANNER REKBER / MC RINGKAS & PAS DI HP -->
+<div class="rekber-banner">
+  <div class="rekber-info">
+    <span style="font-size: 18px;">🛡️</span>
+    <div>
+      <div style="display: flex; align-items: center; gap: 6px; flex-wrap: wrap;">
+        <strong style="font-size: 12px; color: #fff;">Rekber / MC Resmi</strong>
+        <span class="rekber-badge-fee">Fee Rp2.000</span>
+      </div>
+      <p style="font-size: 10px; color: #a7f3d0; margin-top: 2px; line-height: 1.2;">
+        Transaksi 100% aman, dana ditahan Admin sampai produk sukses diterima.
+      </p>
     </div>
   </div>
+  <a href="https://wa.me/6285179807522?text=Halo%20Admin,%20saya%20mau%20pakai%20jasa%20Rekber" target="_blank" class="btn-rekber">
+    Pakai MC ➔
+  </a>
+</div>
 
-  <script>
-    // 1. Konfigurasi Supabase Kamu
-    const SUPABASE_URL = "https://YOUR_SUPABASE_URL.supabase.co"; // Ganti dengan URL Supabase milikmu
-    const SUPABASE_ANON_KEY = "YOUR_SUPABASE_ANON_KEY";           // Ganti dengan Anon Key milikmu
+<div class="hero-section">
+  <h1 class="hero-title">Majlis Jubel <span>Marketplace</span></h1>
+  
+  <div class="quote-box">
+    <p class="arabic-quote">ليس الرجل الذي يسلم للأقدار وإنما الرجل الذي يدفع الأقدار بالأقدار</p>
+    <p class="hero-subtitle">"Lelaki bukanlah yang pasrah terhadap takdir, namun lelaki sejati adalah yang menolak takdir buruk untuk sebuah takdir yang indah."</p>
+  </div>
+</div>
+
+<div class="search">
+  <span>🔍</span>
+  <input id="searchInput" type="text" placeholder="Cari akun atau produk...">
+</div>
+
+<!-- KATEGORI PRODUK & TOMBOL SELL -->
+<div class="categories">
+  <div class="category active-cat" onclick="filterCategory(this, 'Beranda')">Beranda</div>
+  <div class="category" onclick="filterCategory(this, 'Top Up')">Top Up & Voucher</div>
+  <div class="category" onclick="filterCategory(this, 'MLBB')">Akun MLBB</div>
+  <div class="category" onclick="filterCategory(this, 'Roblox')">Roblox</div>
+  <div class="category" onclick="filterCategory(this, 'Gmail Fresh')">Gmail Fresh</div>
+  <div class="category" onclick="filterCategory(this, 'Nokos')">Nokos</div>
+  <div class="category" style="border-color: #f05b9b; color: #f05b9b; font-weight: bold;" onclick="openSellModal()">💰 Sell / Jual Akun</div>
+</div>
+
+<div id="topup-section" style="margin-top: 10px;">
+  <div class="section-title">💎 TOP UP GAME & VOUCHER INSTAN</div>
+  <div id="topup-grid" class="product-grid"></div>
+</div>
+
+<div id="other-products-title" class="section-title">PRODUK TERBARU</div>
+
+<div id="product-container" class="product-grid">
+  <p style="color:#aaa; padding: 10px; grid-column: 1/-1;">Memuat produk...</p>
+</div>
+
+<div id="nokos-section" style="margin-top: 24px;">
+  <div class="section-title">📱 LIST HARGA NOKOS</div>
+  <div id="nokos-grid" class="product-grid"></div>
+</div>
+
+<div id="review-section-wrapper">
+  <div class="review-box">
+    <h3 style="margin-bottom: 12px; color: #fff; text-align: center; font-size: 16px;">⭐ Beri Ulasan Pembelian</h3>
     
-    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    <input type="text" id="rev-nama" class="review-input" placeholder="Nama Kamu">
+    
+    <select id="rev-rating" class="review-select">
+      <option value="5">⭐⭐⭐⭐⭐ (5/5) - Sangat Puas</option>
+      <option value="4">⭐⭐⭐⭐ (4/5) - Bagus</option>
+      <option value="3">⭐⭐⭐ (3/5) - Cukup</option>
+      <option value="2">⭐⭐ (2/5) - Kurang</option>
+      <option value="1">⭐ (1/5) - Buruk</option>
+    </select>
+    
+    <textarea id="rev-komentar" class="review-textarea" placeholder="Tuliskan pengalaman atau ulasan kamu..." rows="3"></textarea>
+    
+    <button id="btn-submit-review" class="btn-submit-review" onclick="kirimUlasan()">Kirim Ulasan</button>
+  </div>
 
-    let allProducts = [];
-    let currentCategory = "Beranda";
+  <div style="margin: 0 18px 24px;">
+    <div class="section-title" style="margin: 0 0 12px 0;">💬 ULASAN PEMBELI</div>
+    <div id="daftar-ulasan">
+      <p style="color:#aaa; font-size: 13px;">Memuat ulasan...</p>
+    </div>
+  </div>
+</div>
 
-    // 2. Mengambil data dari tabel Supabase
-    async function fetchProducts() {
-      try {
-        const { data, error } = await supabase
-          .from('products') // Sesuaikan nama tabel jika berbeda
-          .select('*');
+</div>
 
-        if (error) {
-          console.error("Gagal mengambil data produk:", error);
-          return;
-        }
+<!-- MODAL CHECKOUT -->
+<div id="detailModal" class="modal">
+  <div class="modal-content">
+    <h3 id="modalTitle">Detail Produk</h3>
+    <p id="modalDesc">Deskripsi produk...</p>
+    
+    <div id="topupInputContainer" style="display:none; margin-bottom: 14px;">
+      <label id="topupLabel" style="font-size: 12px; color: #f05b9b; font-weight: bold; margin-bottom: 6px; display: block;">🎯 Masukkan ID & Zone ID / No HP:</label>
+      <div class="input-group">
+        <input type="text" id="topupTargetId" class="input-field" placeholder="User ID / No HP">
+        <input type="text" id="topupZoneId" class="input-field" placeholder="Zone ID" style="width: 110px;">
+      </div>
+    </div>
 
-        allProducts = data || [];
-        renderProducts("");
-      } catch (err) {
-        console.error("Terjadi kesalahan:", err);
-      }
+    <div id="qtyBox" class="qty-container">
+      <span class="qty-label" id="modalStockLabel">Jumlah Pesanan:</span>
+      <div class="qty-controls">
+        <button id="btnMinus" class="qty-btn" onclick="changeQty(-1)">-</button>
+        <input type="number" id="qtyInput" class="qty-input" value="1" min="1" readonly>
+        <button id="btnPlus" class="qty-btn" onclick="changeQty(1)">+</button>
+      </div>
+    </div>
+
+    <span id="totalPriceText" class="total-price-text">Total: Rp 0</span>
+
+    <button id="modalBuyBtn" class="btn-buy" onclick="handleCheckout()">🚀 Beli sekarang</button>
+    <a id="modalSecondaryBtn" class="btn-secondary" href="https://whatsapp.com/channel/0029Vb8MLHCHLHQgH3KTTV0K" target="_blank" style="display: none;">📋 LIHAT SPEK LENGKAP</a>
+
+    <span class="btn-close" onclick="closeModal()">Tutup</span>
+  </div>
+</div>
+
+<!-- MODAL FITUR SELL / JUAL AKUN KE ADMIN -->
+<div id="sellModal" class="modal">
+  <div class="modal-content">
+    <h3 style="color: #f05b9b; text-align: center;">💰 Jual Akun / Item ke Admin</h3>
+    
+    <div style="background: rgba(16, 185, 129, 0.15); border: 1px solid #10b981; padding: 10px; border-radius: 12px; margin: 12px 0; text-align: center;">
+      <span style="font-size: 11px; color: #a7f3d0; display: block;">Dana Restok Admin Tersedia:</span>
+      <strong style="font-size: 16px; color: #34d399;" id="danaRestokDisplay">Memuat...</strong>
+    </div>
+
+    <p style="font-size: 12px; color: #aaa; margin-bottom: 12px; text-align: center;">Silakan isi formulir di bawah jika ingin menjual akun/item kamu ke Admin.</p>
+
+    <div style="display: flex; flex-direction: column; gap: 10px;">
+      <div>
+        <label style="font-size: 11px; color: #ddd; font-weight: bold; margin-bottom: 4px; display: block;">Item / Game yang Mau Dijual:</label>
+        <input type="text" id="sellItemName" class="input-field" placeholder="Contoh: Akun MLBB / Roblox / Gmail">
+      </div>
+
+      <div>
+        <label style="font-size: 11px; color: #ddd; font-weight: bold; margin-bottom: 4px; display: block;">Deskripsi Spek Akun:</label>
+        <textarea id="sellItemDesc" class="input-field" style="height: 80px; resize: vertical;" placeholder="Contoh: Skin 120+, Hero Max, Log Moonton Sepaket Email Mati"></textarea>
+      </div>
+
+      <div>
+        <label style="font-size: 11px; color: #ddd; font-weight: bold; margin-bottom: 4px; display: block;">Harga yang Ditawarkan (Rp):</label>
+        <input type="number" id="sellItemPrice" class="input-field" placeholder="Contoh: 150000">
+      </div>
+    </div>
+
+    <button onclick="submitSellToWA()" class="btn-buy" style="margin-top: 14px; background: #25d366;">🚀 Kirim Penawaran ke WA</button>
+    <span class="btn-close" onclick="closeSellModal()">Batal / Tutup</span>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+let allProducts = [];
+let topupItems = [];
+let currentCategory = 'Beranda';
+let danaRestokAdmin = "Rp 0";
+
+const URL_STOK_CHANNEL = "https://whatsapp.com/channel/0029Vb8MLHCHLHQgH3KTTV0K";
+const URL_TESTI_CHANNEL = "https://whatsapp.com/channel/0029VbDRClmG8l5Clsknh53W";
+
+let currentProduct = { title: '', desc: '', rawPrice: 0, formattedPrice: '', stock: 0, category: '', isTopUp: false, serviceCode: '', gameType: '' };
+let currentQty = 1;
+
+const nokosItems = [
+  { name: 'Nokos WhatsApp', desc: 'Nomor Kosong / OTP Instan WhatsApp Fresh', price: 'Rp 6.000', keywords: 'nokos whatsapp wa', stock: 99, category: 'Nokos' },
+  { name: 'Nokos Facebook', desc: 'Nomor Kosong / OTP Instan Facebook Fresh', price: 'Rp 1.200', keywords: 'nokos facebook fb', stock: 99, category: 'Nokos' },
+  { name: 'Nokos Google / Gmail / YT', desc: 'Nomor Kosong / OTP Instan Google, Gmail, dan YouTube', price: 'Rp 1.200', keywords: 'nokos google gmail youtube yt', stock: 99, category: 'Nokos' },
+  { name: 'Nokos DANA', desc: 'Nomor Kosong / OTP Instan Aplikasi DANA', price: 'Rp 3.000', keywords: 'nokos dana', stock: 99, category: 'Nokos' },
+  { name: 'Nokos OVO', desc: 'Nomor Kosong / OTP Instan Aplikasi OVO', price: 'Rp 1.600', keywords: 'nokos ovo', stock: 99, category: 'Nokos' },
+  { name: 'Nokos SeaBank', desc: 'Nomor Kosong / OTP Instan Aplikasi SeaBank', price: 'Rp 3.000', keywords: 'nokos seabank', stock: 99, category: 'Nokos' }
+];
+
+const SUPABASE_URL = "https://sgadlmoskhfyyksobggk.supabase.co";
+const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNnYWRsbW9za2hmeXlrc29iZ2drIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTA5NzcxNzksImV4cCI6MjEwNjU1MzE3OX0.XASgEjWt-PEK0jsFAkncDGfQ7Tu8JHDtW3eHIqn0mwk";
+const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+async function loadData() {
+  try {
+    const { data: prodData } = await supabaseClient
+      .from("products")
+      .select("*")
+      .order("id", { ascending: false });
+
+    allProducts = prodData || [];
+
+    const { data: topupData } = await supabaseClient
+      .from("topup_items")
+      .select("*")
+      .order("id", { ascending: true });
+
+    if (topupData) {
+      topupItems = topupData.map(item => ({
+        name: item.name,
+        desc: item.description || '',
+        price: item.price_display || `Rp ${Number(item.raw_price).toLocaleString('id-ID')}`,
+        rawPrice: item.raw_price,
+        serviceCode: item.service_code,
+        category: item.category || 'Top Up',
+        gameType: item.game_type || 'MLBB',
+        stock: item.stock !== undefined ? item.stock : 999
+      }));
     }
 
-    // 3. Menampilkan produk ke HTML
-    function renderProducts(keyword) {
-      const container = document.getElementById("product-container");
-      const titleEl = document.getElementById("other-products-title");
+    renderAll();
 
-      const filtered = allProducts.filter(p => {
-        const name = (p.name || "").toLowerCase();
-        const cat = (p.category || "").toLowerCase();
-        const desc = (p.description || "").toLowerCase();
-        
-        const matchesSearch = name.includes(keyword) || cat.includes(keyword) || desc.includes(keyword);
-        const matchesCat = (currentCategory === "Beranda") || cat.includes(currentCategory.toLowerCase()) || name.includes(currentCategory.toLowerCase());
+  } catch (err) {
+    console.error("Gagal memuat data:", err);
+  }
+}
 
-        return matchesSearch && matchesCat;
-      });
+// FUNGSI SUPABASE FITUR SELL / DANA RESTOK
+async function fetchDanaRestok() {
+  try {
+    const { data, error } = await supabaseClient
+      .from('settings')
+      .select('value')
+      .eq('key', 'dana_restok')
+      .single();
 
-      if (filtered.length === 0) {
-        titleEl.style.display = "none";
-        container.innerHTML = "<p>Produk tidak ditemukan.</p>";
+    if (data && data.value) {
+      const nominal = Number(data.value) || 0;
+      danaRestokAdmin = "Rp " + nominal.toLocaleString("id-ID");
+    } else {
+      danaRestokAdmin = "Rp 0";
+    }
+  } catch (err) {
+    console.error("Gagal mengambil dana restok:", err);
+    danaRestokAdmin = "Rp 0";
+  }
+}
+
+async function openSellModal() {
+  document.getElementById("danaRestokDisplay").innerText = "Memuat...";
+  document.getElementById("sellModal").style.display = "flex";
+  
+  await fetchDanaRestok();
+  document.getElementById("danaRestokDisplay").innerText = danaRestokAdmin;
+}
+
+function closeSellModal() {
+  document.getElementById("sellModal").style.display = "none";
+}
+
+function submitSellToWA() {
+  const item = document.getElementById("sellItemName").value.trim();
+  const desc = document.getElementById("sellItemDesc").value.trim();
+  const price = document.getElementById("sellItemPrice").value.trim();
+
+  if (!item || !desc || !price) {
+    alert("Harap lengkapi semua kolom penawaran!");
+    return;
+  }
+
+  const priceFormatted = Number(price).toLocaleString("id-ID");
+
+  const textWA = encodeURIComponent(
+    `Halo Admin Majlis Jubel 👋\n\nSaya mau nawarin/jual akun/item nih:\n\n` +
+    `📌 *Item/Game:* ${item}\n` +
+    `📝 *Deskripsi Spek:* ${desc}\n` +
+    `💰 *Harga Penawaran:* Rp ${priceFormatted}\n\n` +
+    `Apakah Admin berminat menampung/restok? Terima kasih!`
+  );
+
+  window.open(`https://wa.me/6285179807522?text=${textWA}`, '_blank');
+  closeSellModal();
+}
+
+function renderTopup(keyword) {
+  const topupGrid = document.getElementById("topup-grid");
+  const topupSection = document.getElementById("topup-section");
+
+  if (currentCategory !== 'Beranda' && currentCategory !== 'Top Up') {
+    topupSection.style.display = "none";
+    return;
+  }
+
+  const filteredTopup = topupItems.filter(item => {
+    const text = (item.name + " " + item.desc).toLowerCase();
+    return text.includes(keyword);
+  });
+
+  if (filteredTopup.length === 0) {
+    topupSection.style.display = "none";
+  } else {
+    topupSection.style.display = "block";
+    topupGrid.innerHTML = filteredTopup.map(item => {
+      const isAvailable = item.stock > 0;
+      const badgeClass = isAvailable ? "badge-tag" : "badge-tag badge-soldout";
+      const badgeText = isAvailable ? "INSTAN" : "SOLD OUT";
+
+      return `
+        <div class="card-product" onclick="openTopupModal('${item.name}', '${item.desc}', '${item.price}', ${item.rawPrice}, '${item.serviceCode}', '${item.gameType}', ${item.stock})">
+          <div class="card-body">
+            <div class="card-header-badge">
+              <span class="${badgeClass}">${badgeText}</span>
+              <span class="nokos-badge-game">${item.gameType}</span>
+            </div>
+            <h3 class="card-title">💎 ${item.name}</h3>
+            <div class="card-price">${item.price}</div>
+          </div>
+        </div>
+      `;
+    }).join("");
+  }
+}
+
+function renderNokos(keyword) {
+  const nokosGrid = document.getElementById("nokos-grid");
+  const nokosSection = document.getElementById("nokos-section");
+
+  if (currentCategory !== 'Beranda' && currentCategory !== 'Nokos') {
+    nokosSection.style.display = "none";
+    return;
+  }
+
+  const filteredNokos = nokosItems.filter(item => {
+    const text = (item.name + " " + item.desc + " " + item.keywords).toLowerCase();
+    return text.includes(keyword);
+  });
+
+  if (filteredNokos.length === 0) {
+    nokosSection.style.display = "none";
+  } else {
+    nokosSection.style.display = "block";
+    nokosGrid.innerHTML = filteredNokos.map(item => `
+      <div class="card-product" onclick="openModal('${item.name}', '${item.desc}', '${item.price}', ${item.stock}, '${item.category}')">
+        <div class="card-body">
+          <div class="card-header-badge">
+            <span class="badge-tag">READY (${item.stock})</span>
+            <span class="nokos-badge-game">NOKOS</span>
+          </div>
+          <h3 class="card-title">🔹 ${item.name.replace('Nokos ', '')}</h3>
+          <div class="card-price">${item.price}</div>
+        </div>
+      </div>
+    `).join("");
+  }
+}
+
+function renderProducts(keyword) {
+  const container = document.getElementById("product-container");
+  const titleEl = document.getElementById("other-products-title");
+
+  const filtered = allProducts.filter(p => {
+    const name = (p.name || "").toLowerCase();
+    const cat = (p.category || "").toLowerCase();
+    const desc = (p.description || "").toLowerCase();
+    
+    const matchesSearch = name.includes(keyword) || cat.includes(keyword) || desc.includes(keyword);
+    const matchesCat = (currentCategory === "Beranda") || cat.includes(currentCategory.toLowerCase()) || name.includes(currentCategory.toLowerCase());
+
+    return matchesSearch && matchesCat;
+  });
+
+  if (filtered.length === 0) {
+    titleEl.style.display = "none";
+    container.innerHTML = "";
+    return;
+  }
+
+  titleEl.style.display = "block";
+  container.innerHTML = filtered.map(p => {
+    const name = p.name || "Produk Tanpa Nama";
+    const category = p.category || "PRODUK";
+    const stock = (p.stock !== undefined && p.stock !== null) ? Number(p.stock) : 0;
+    const isAvailable = stock > 0;
+    
+    let priceDisplay = "Cek Stok";
+    if (p.price && Number(p.price) > 0) {
+      priceDisplay = "Rp " + Number(p.price).toLocaleString("id-ID");
+    }
+
+    const imgUrl = (p.image_url && p.image_url.trim() !== "") ? p.image_url : "";
+    const desc = (p.description || "Belum ada deskripsi").replace(/'/g, "\\'");
+
+    let imageHTML = "";
+    if (imgUrl) {
+      imageHTML = `
+        <div class="card-image-wrapper">
+          <img src="${imgUrl}" alt="${name}" class="card-img" loading="lazy" onerror="this.onerror=null; this.parentElement.style.display='none';">
+          <span class="badge-game">${category}</span>
+        </div>
+      `;
+    }
+
+    const badgeClass = isAvailable ? "badge-tag" : "badge-tag badge-soldout";
+    const badgeText = isAvailable ? `STOK: ${stock}` : "SOLD OUT";
+
+    return `
+      <div class="card-product" onclick="openModal('${name}', '${desc}', '${priceDisplay}', ${stock}, '${category}')">
+        ${imageHTML}
+        <div class="card-body">
+          ${!imgUrl ? `
+            <div class="card-header-badge">
+              <span class="${badgeClass}">${badgeText}</span>
+              <span class="nokos-badge-game">${category}</span>
+            </div>
+          ` : `<span class="${badgeClass}">${badgeText}</span>`}
+          <h3 class="card-title">${name}</h3>
+          <div class="card-price">${priceDisplay}</div>
+        </div>
+      </div>
+    `;
+  }).join("");
+}
+
+function renderAll() {
+  const keyword = document.getElementById("searchInput").value.toLowerCase().trim();
+  renderProducts(keyword);
+  renderNokos(keyword);
+  renderTopup(keyword);
+
+  const reviewWrapper = document.getElementById("review-section-wrapper");
+  if (currentCategory === "Beranda") {
+    reviewWrapper.style.display = "block";
+  } else {
+    reviewWrapper.style.display = "none";
+  }
+}
+
+function openTopupModal(title, desc, priceStr, rawPrice, serviceCode, gameType = 'MLBB', stock = 999) {
+  if (stock <= 0) {
+    alert("Maaf, stok item topup ini sedang kosong!");
+    return;
+  }
+
+  currentQty = 1;
+  document.getElementById("qtyInput").value = 1;
+
+  currentProduct = {
+    title: title,
+    desc: desc,
+    rawPrice: rawPrice,
+    formattedPrice: priceStr,
+    stock: stock,
+    category: 'Top Up',
+    isTopUp: true,
+    serviceCode: serviceCode,
+    gameType: gameType
+  };
+
+  document.getElementById("modalTitle").innerText = title;
+  document.getElementById("modalDesc").innerText = desc;
+  
+  const topupContainer = document.getElementById("topupInputContainer");
+  const targetInput = document.getElementById("topupTargetId");
+  const zoneInput = document.getElementById("topupZoneId");
+  const topupLabel = document.getElementById("topupLabel");
+
+  topupContainer.style.display = "block";
+  targetInput.value = "";
+  zoneInput.value = "";
+
+  if (gameType === 'MLBB') {
+    topupLabel.innerText = "🎯 Masukkan ID & Zone ID MLBB:";
+    targetInput.placeholder = "User ID";
+    zoneInput.style.display = "block";
+  } else if (gameType === 'PULSA') {
+    topupLabel.innerText = "📱 Masukkan Nomor HP:";
+    targetInput.placeholder = "08xxxxxxxxxx";
+    zoneInput.style.display = "none";
+  } else {
+    topupLabel.innerText = "🎯 Masukkan Username / ID:";
+    targetInput.placeholder = "User ID / Username";
+    zoneInput.style.display = "none";
+  }
+
+  document.getElementById("qtyBox").style.display = "none";
+  document.getElementById("modalSecondaryBtn").style.display = "none";
+
+  const btnBuy = document.getElementById("modalBuyBtn");
+  btnBuy.innerText = "⚡ Beli sekarang";
+  btnBuy.style.background = "#f05b9b";
+
+  document.getElementById("totalPriceText").innerText = `Total: ${priceStr}`;
+  document.getElementById("detailModal").style.display = "flex";
+}
+
+function openModal(title, desc, priceStr, stock, category) {
+  const numStock = Number(stock) || 0;
+  const isAvailable = numStock > 0;
+  const catLower = (category || "").toLowerCase();
+  
+  const isMLBB = catLower.includes("mlbb") || catLower.includes("mobile legend") || catLower.includes("ml");
+
+  currentQty = isAvailable ? 1 : 0;
+  document.getElementById("qtyInput").value = currentQty;
+  document.getElementById("topupInputContainer").style.display = "none";
+  
+  const rawNum = parseInt(priceStr.replace(/[^0-9]/g, ''), 10) || 0;
+  
+  currentProduct = {
+    title: title,
+    desc: desc,
+    rawPrice: rawNum,
+    formattedPrice: priceStr,
+    stock: numStock,
+    category: category,
+    isTopUp: false,
+    serviceCode: ''
+  };
+
+  document.getElementById("modalTitle").innerText = title;
+  document.getElementById("modalDesc").innerText = desc;
+
+  const qtyBox = document.getElementById("qtyBox");
+  const btnBuy = document.getElementById("modalBuyBtn");
+  const btnSecondary = document.getElementById("modalSecondaryBtn");
+
+  if (!isAvailable) {
+    qtyBox.style.display = "none";
+    document.getElementById("totalPriceText").innerText = "❌ PRODUK INI SUDAH TERJUAL / SOLD OUT";
+    
+    if (isMLBB) {
+      btnBuy.innerText = "📸 SPEK LENGKAP & TESTI";
+      btnBuy.onclick = () => window.open(URL_TESTI_CHANNEL, '_blank');
+      btnBuy.style.background = "#25d366";
+      btnBuy.style.display = "block";
+    } else {
+      btnBuy.style.display = "none";
+    }
+
+    btnSecondary.style.display = "none";
+
+  } else {
+    qtyBox.style.display = "flex";
+    document.getElementById("modalStockLabel").innerText = `Jumlah Pesanan (Stok: ${numStock}):`;
+    
+    btnBuy.style.display = "block";
+    btnBuy.innerText = "Beli via WhatsApp";
+    btnBuy.style.background = "#25d366";
+    btnBuy.onclick = () => handleCheckout();
+
+    if (isMLBB) {
+      btnSecondary.innerText = "📋 LIHAT SPEK LENGKAP";
+      btnSecondary.href = URL_STOK_CHANNEL;
+      btnSecondary.style.display = "block";
+    } else {
+      btnSecondary.style.display = "none";
+    }
+
+    updateModalTotal();
+  }
+  
+  document.getElementById("detailModal").style.display = "flex";
+}
+
+function changeQty(amount) {
+  if (currentProduct.stock <= 0) return;
+
+  currentQty += amount;
+  if (currentQty < 1) currentQty = 1;
+  if (currentQty > currentProduct.stock) currentQty = currentProduct.stock;
+  
+  document.getElementById("qtyInput").value = currentQty;
+  updateModalTotal();
+}
+
+function updateModalTotal() {
+  if (currentProduct.stock <= 0) return;
+
+  let totalText = "";
+  if (currentProduct.rawPrice > 0) {
+    const totalPrice = currentProduct.rawPrice * currentQty;
+    totalText = `Total: Rp ${totalPrice.toLocaleString("id-ID")} (${currentQty}x)`;
+  } else {
+    totalText = `Harga: ${currentProduct.formattedPrice}`;
+  }
+
+  document.getElementById("totalPriceText").innerText = totalText;
+}
+
+async function handleCheckout() {
+  if (currentProduct.isTopUp) {
+    const targetId = document.getElementById("topupTargetId").value.trim();
+    const zoneId = document.getElementById("topupZoneId").value.trim();
+
+    if (!targetId) {
+      alert("Harap masukkan ID / Nomor tujuan kamu!");
+      return;
+    }
+
+    let fullTarget = targetId;
+    if (currentProduct.gameType === 'MLBB') {
+      if (!zoneId) {
+        alert("Harap masukkan Zone ID MLBB kamu!");
+        return;
+      }
+      fullTarget = `${targetId}(${zoneId})`;
+    }
+
+    const btnBuy = document.getElementById("modalBuyBtn");
+    btnBuy.disabled = true;
+    btnBuy.innerText = "Menyimpan Pesanan...";
+
+    try {
+      const { data, error } = await supabaseClient
+        .from('orders')
+        .insert([
+          {
+            nama_produk: currentProduct.title,
+            kode_layanan: currentProduct.serviceCode,
+            target_id: fullTarget,
+            harga_total: currentProduct.rawPrice,
+            status: 'pending'
+          }
+        ]);
+
+      if (error) {
+        alert("Gagal membuat order: " + error.message);
+        btnBuy.disabled = false;
+        btnBuy.innerText = "⚡ Beli sekarang";
         return;
       }
 
-      titleEl.style.display = "block";
-      container.innerHTML = filtered.map(p => {
-        const name = p.name || "Produk Tanpa Nama";
-        const category = p.category || "PRODUK";
-        const stock = (p.stock !== undefined && p.stock !== null) ? Number(p.stock) : 0;
-        const isAvailable = stock > 0;
-        
-        let priceDisplay = "Cek Stok";
-        if (p.price && Number(p.price) > 0) {
-          priceDisplay = "Rp " + Number(p.price).toLocaleString("id-ID");
-        }
+      const textWa = encodeURIComponent(`Halo Admin Majlis Jubel 👋\n\nSaya sudah buat orderan Top Up:\n🔹 Produk: ${currentProduct.title}\n🎯 ID/Tujuan: ${fullTarget}\n💰 Total: Rp ${currentProduct.rawPrice.toLocaleString("id-ID")}\n\nMohon info QRIS / No Rekening untuk pembayarannya ya!`);
+      window.open(`https://wa.me/6285179807522?text=${textWa}`, '_blank');
+      
+      closeModal();
+      btnBuy.disabled = false;
+      btnBuy.innerText = "⚡ Beli sekarang";
 
-        const imgUrl = (p.image_url && p.image_url.trim() !== "") ? p.image_url : "";
-
-        let imageHTML = "";
-        if (imgUrl) {
-          imageHTML = `
-            <div class="card-image-wrapper">
-              <img src="${imgUrl}" alt="${name}" class="card-img" loading="lazy" onerror="this.onerror=null; this.parentElement.style.display='none';">
-              <span class="badge-game">${category}</span>
-            </div>
-          `;
-        }
-
-        const badgeClass = isAvailable ? "badge-tag" : "badge-tag badge-soldout";
-        const badgeText = isAvailable ? `STOK: ${stock}` : "SOLD OUT";
-
-        // MENGGUNAKAN openProductById UNTUK MENGHINDARI ERROR ENTER/PETIK TEKS
-        return `
-          <div class="card-product" onclick="openProductById('${p.id}')">
-            ${imageHTML}
-            <div class="card-body">
-              ${!imgUrl ? `
-                <div class="card-header-badge">
-                  <span class="${badgeClass}">${badgeText}</span>
-                  <span class="nokos-badge-game">${category}</span>
-                </div>
-              ` : `<span class="${badgeClass}">${badgeText}</span>`}
-              <h3 class="card-title">${name}</h3>
-              <div class="card-price">${priceDisplay}</div>
-            </div>
-          </div>
-        `;
-      }).join("");
+    } catch (err) {
+      alert("Terjadi kesalahan koneksi.");
+      btnBuy.disabled = false;
+      btnBuy.innerText = "⚡ Beli sekarang";
     }
 
-    // 4. Helper untuk membuka modal berdasarkan ID produk secara aman
-    function openProductById(productId) {
-      const p = allProducts.find(item => String(item.id) === String(productId));
-      if (!p) return;
+  } else {
+    let totalText = currentProduct.rawPrice > 0 
+      ? `Rp ${(currentProduct.rawPrice * currentQty).toLocaleString("id-ID")} (${currentQty}x)`
+      : currentProduct.formattedPrice;
 
-      const name = p.name || "Produk Tanpa Nama";
-      const desc = p.description || "Belum ada deskripsi";
-      const category = p.category || "PRODUK";
-      const stock = (p.stock !== undefined && p.stock !== null) ? Number(p.stock) : 0;
-      
-      let priceDisplay = "Cek Stok";
-      if (p.price && Number(p.price) > 0) {
-        priceDisplay = "Rp " + Number(p.price).toLocaleString("id-ID");
-      }
+    const textWa = encodeURIComponent(`Halo Admin Majlis Jubel 👋, saya mau order produk berikut:\n\n🔹 Layanan: ${currentProduct.title}\n📦 Jumlah: ${currentQty}x\n💰 Total: ${totalText}\n\nApakah stoknya ready? Mohon diproses ya, terima kasih!`);
+    window.open(`https://wa.me/6285179807522?text=${textWa}`, '_blank');
+  }
+}
 
-      openModal(name, desc, priceDisplay, stock, category);
+function closeModal() {
+  document.getElementById("detailModal").style.display = "none";
+}
+
+document.getElementById("searchInput").addEventListener("input", renderAll);
+
+function filterCategory(el, catName) {
+  document.querySelectorAll(".category").forEach(c => c.classList.remove("active-cat"));
+  el.classList.add("active-cat");
+  currentCategory = catName;
+  renderAll();
+}
+
+async function loadReviews() {
+  const container = document.getElementById('daftar-ulasan');
+
+  try {
+    const { data: reviews, error } = await supabaseClient
+      .from('reviews')
+      .select('*')
+      .order('created_at', { ascending: false });
+
+    if (error || !reviews || reviews.length === 0) {
+      container.innerHTML = '<p style="color:#aaa; font-size:13px;">Belum ada ulasan dari pembeli.</p>';
+      return;
     }
 
-    // 5. Fungsi membuka modal detail produk
-    function openModal(name, desc, price, stock, category) {
-      document.getElementById("modal-title").innerText = name;
-      document.getElementById("modal-price").innerText = price;
-      document.getElementById("modal-desc").innerText = desc;
-      
-      const adminPhone = "6281234567890"; // Ganti dengan nomor WA kamu
-      const message = `Halo admin, saya ingin membeli ${name} (${category}) seharga ${price}. Apakah stok masih ada?`;
-      
-      const buyBtn = document.getElementById("modal-buy-btn");
-      buyBtn.href = `https://wa.me/${adminPhone}?text=${encodeURIComponent(message)}`;
-      
-      if (stock <= 0) {
-        buyBtn.innerText = "Stok Habis";
-        buyBtn.style.background = "#ccc";
-        buyBtn.style.pointerEvents = "none";
-      } else {
-        buyBtn.innerText = "Beli via WhatsApp";
-        buyBtn.style.background = "#25d366";
-        buyBtn.style.pointerEvents = "auto";
-      }
+    container.innerHTML = reviews.map(r => `
+      <div class="review-card">
+        <div class="review-card-header">
+          <span>👤 ${r.nama_pembeli}</span>
+          <span>${'⭐'.repeat(r.rating)}</span>
+        </div>
+        <p class="review-card-text">${r.komentar}</p>
+      </div>
+    `).join('');
+  } catch (err) {
+    container.innerHTML = '<p style="color:#ff6b99; font-size:13px;">Gagal memuat ulasan.</p>';
+  }
+}
 
-      document.getElementById("product-modal").classList.add("active");
-    }
+async function kirimUlasan() {
+  const nama = document.getElementById('rev-nama').value.trim();
+  const rating = document.getElementById('rev-rating').value;
+  const komentar = document.getElementById('rev-komentar').value.trim();
+  const btn = document.getElementById('btn-submit-review');
 
-    // 6. Fungsi menutup modal
-    function closeModal() {
-      document.getElementById("product-modal").classList.remove("active");
-    }
+  if (!nama || !komentar) {
+    alert('Harap isi nama dan komentar ulasan kamu!');
+    return;
+  }
 
-    // Tutup modal jika user mengklik area luar modal
-    window.onclick = function(event) {
-      const modal = document.getElementById("product-modal");
-      if (event.target === modal) {
-        closeModal();
-      }
-    };
+  btn.disabled = true;
+  btn.innerText = 'Mengirim...';
 
-    // Jalankan ambil data saat halaman dimuat
-    fetchProducts();
-  </script>
+  const { error } = await supabaseClient
+    .from('reviews')
+    .insert([{ nama_pembeli: nama, rating: parseInt(rating), komentar: komentar }]);
+
+  if (error) {
+    alert('Gagal mengirim ulasan: ' + error.message);
+  } else {
+    alert('Terima kasih atas ulasannya! 🙏');
+    document.getElementById('rev-nama').value = '';
+    document.getElementById('rev-komentar').value = '';
+    loadReviews();
+  }
+
+  btn.disabled = false;
+  btn.innerText = 'Kirim Ulasan';
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  loadData();
+  loadReviews();
+});
+</script>
 </body>
 </html>
