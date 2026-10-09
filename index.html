@@ -738,6 +738,11 @@ header{
       </div>
 
       <div>
+        <label style="font-size: 11px; color: #ddd; font-weight: bold; margin-bottom: 4px; display: block;">Nomor WhatsApp Penjual:</label>
+        <input type="text" id="titipNoHP" class="input-field" placeholder="Contoh: 081234567890">
+      </div>
+
+      <div>
         <label style="font-size: 11px; color: #ddd; font-weight: bold; margin-bottom: 4px; display: block;">Link Screenshot Spek (ImgBB / Drive / Imgur):</label>
         <input type="text" id="titipGambar" class="input-field" placeholder="https://i.ibb.co/... (opsional)">
       </div>
@@ -792,7 +797,7 @@ let danaRestokAdmin = "Rp 0";
 const URL_STOK_CHANNEL = "https://whatsapp.com/channel/0029Vb8MLHCHLHQgH3KTTV0K";
 const URL_TESTI_CHANNEL = "https://whatsapp.com/channel/0029VbDRClmG8l5Clsknh53W";
 
-let currentProduct = { title: '', desc: '', rawPrice: 0, formattedPrice: '', stock: 0, category: '', isTopUp: false, serviceCode: '', gameType: '' };
+let currentProduct = { title: '', desc: '', rawPrice: 0, formattedPrice: '', stock: 0, category: '', isTopUp: false, serviceCode: '', gameType: '', sellerPhone: '' };
 let currentQty = 1;
 
 const nokosItems = [
@@ -856,6 +861,7 @@ function submitTitipLapakToWA() {
   const kategori = document.getElementById("titipKategori").value;
   const harga = document.getElementById("titipHarga").value.trim();
   const desc = document.getElementById("titipDeskripsi").value.trim();
+  const nohp = document.getElementById("titipNoHP").value.trim();
   const gambar = document.getElementById("titipGambar").value.trim() || "-";
 
   if (!nama || !harga || !desc) {
@@ -872,6 +878,7 @@ function submitTitipLapakToWA() {
     `🏷️ *Kategori:* ${kategori}\n` +
     `💰 *Harga Jual:* Rp ${hargaFormatted}\n` +
     `📝 *Deskripsi Spek:* ${desc}\n` +
+    `📱 *WA Penjual:* ${nohp || '-'}\n` +
     `🖼️ *Link Gambar/SS:* ${gambar}\n\n` +
     `Mohon dipostingkan di katalog Titip Lapak web ya min, terima kasih!`
   );
@@ -1009,7 +1016,7 @@ function renderNokos(keyword) {
   }
 }
 
-// FUNGSI RENDER PRODUK SUPABASE DENGAN SISTEM ID (AMAT SANGAT AMAN DARI ERROR ENTER/PETIK)
+// FUNGSI RENDER PRODUK SUPABASE DENGAN SISTEM ID
 function renderProducts(keyword) {
   const container = document.getElementById("product-container");
   const titleEl = document.getElementById("other-products-title");
@@ -1076,7 +1083,7 @@ function renderProducts(keyword) {
   }).join("");
 }
 
-// FUNGSI HELPER MEMBUKA MODAL BERDASARKAN ID PRODUK SUPABASE
+// FUNGSI HELPER MEMBUKA MODAL BERDASARKAN ID PRODUK SUPABASE & MEMBACA NOMOR PENJUAL
 function openProductById(productId) {
   const p = allProducts.find(item => String(item.id) === String(productId));
   if (!p) return;
@@ -1085,11 +1092,24 @@ function openProductById(productId) {
   const desc = p.description || "Belum ada deskripsi";
   const category = p.category || "PRODUK";
   const stock = (p.stock !== undefined && p.stock !== null) ? Number(p.stock) : 0;
-  
+  const sellerPhone = p.seller_phone || "";
+
   let priceDisplay = "Cek Stok";
   if (p.price && Number(p.price) > 0) {
     priceDisplay = "Rp " + Number(p.price).toLocaleString("id-ID");
   }
+
+  currentProduct = {
+    title: name,
+    desc: desc,
+    rawPrice: (p.price && Number(p.price) > 0) ? Number(p.price) : 0,
+    formattedPrice: priceDisplay,
+    stock: stock,
+    category: category,
+    isTopUp: false,
+    serviceCode: '',
+    sellerPhone: sellerPhone
+  };
 
   openModal(name, desc, priceDisplay, stock, category);
 }
@@ -1126,7 +1146,8 @@ function openTopupModal(title, desc, priceStr, rawPrice, serviceCode, gameType =
     category: 'Top Up',
     isTopUp: true,
     serviceCode: serviceCode,
-    gameType: gameType
+    gameType: gameType,
+    sellerPhone: ''
   };
 
   document.getElementById("modalTitle").innerText = title;
@@ -1176,19 +1197,6 @@ function openModal(title, desc, priceStr, stock, category) {
   currentQty = isAvailable ? 1 : 0;
   document.getElementById("qtyInput").value = currentQty;
   document.getElementById("topupInputContainer").style.display = "none";
-  
-  const rawNum = parseInt(priceStr.replace(/[^0-9]/g, ''), 10) || 0;
-  
-  currentProduct = {
-    title: title,
-    desc: desc,
-    rawPrice: rawNum,
-    formattedPrice: priceStr,
-    stock: numStock,
-    category: category,
-    isTopUp: false,
-    serviceCode: ''
-  };
 
   document.getElementById("modalTitle").innerText = title;
   document.getElementById("modalDesc").innerText = desc;
@@ -1321,7 +1329,23 @@ async function handleCheckout() {
       ? `Rp ${(currentProduct.rawPrice * currentQty).toLocaleString("id-ID")} (${currentQty}x)`
       : currentProduct.formattedPrice;
 
-    const textWa = encodeURIComponent(`Halo Admin Majlis Jubel 👋, saya mau order produk berikut:\n\n🔹 Layanan: ${currentProduct.title}\n📦 Jumlah: ${currentQty}x\n💰 Total: ${totalText}\n\nApakah stoknya ready? Mohon diproses ya, terima kasih!`);
+    // MENAMPILKAN KONTAK PENJUAL JIKA TERSEDIA
+    let infoPenjual = "";
+    if (currentProduct.sellerPhone && currentProduct.sellerPhone.trim() !== "") {
+      infoPenjual = `\n👤 *Kontak Penjual:* ${currentProduct.sellerPhone}`;
+    }
+
+    const textWa = encodeURIComponent(
+      `Halo Admin Majlis Jubel 👋\n\n` +
+      `Saya mau order produk berikut via Rekber:\n` +
+      `🔹 *Layanan:* ${currentProduct.title}\n` +
+      `🏷️ *Kategori:* ${currentProduct.category}` +
+      `${infoPenjual}\n` +
+      `📦 *Jumlah:* ${currentQty}x\n` +
+      `💰 *Total:* ${totalText}\n\n` +
+      `Apakah stoknya ready? Mohon info nomor QRIS/Rekening untuk pembayarannya ya, terima kasih!`
+    );
+
     window.open(`https://wa.me/6285179807522?text=${textWa}`, '_blank');
   }
 }
@@ -1405,5 +1429,3 @@ document.addEventListener("DOMContentLoaded", () => {
 </script>
 </body>
 </html>
-
-    
