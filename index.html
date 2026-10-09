@@ -609,7 +609,7 @@ header{
   <input id="searchInput" type="text" placeholder="Cari akun atau produk...">
 </div>
 
-<!-- KATEGORI PRODUK & TOMBOL SELL -->
+<!-- KATEGORI PRODUK, TITIP LAPAK & TOMBOL SELL -->
 <div class="categories">
   <div class="category active-cat" onclick="filterCategory(this, 'Beranda')">Beranda</div>
   <div class="category" onclick="filterCategory(this, 'Top Up')">Top Up & Voucher</div>
@@ -617,7 +617,9 @@ header{
   <div class="category" onclick="filterCategory(this, 'Roblox')">Roblox</div>
   <div class="category" onclick="filterCategory(this, 'Gmail Fresh')">Gmail Fresh</div>
   <div class="category" onclick="filterCategory(this, 'Nokos')">Nokos</div>
-  <div class="category" style="border-color: #f05b9b; color: #f05b9b; font-weight: bold;" onclick="openSellModal()">💰 Sell / Jual Akun</div>
+  <div class="category" onclick="filterCategory(this, 'Titip Lapak')">📢 Titip Lapak</div>
+  <div class="category" style="border-color: #34d399; color: #34d399; font-weight: bold;" onclick="openTitipLapakModal()">➕ Buat Titip Lapak</div>
+  <div class="category" style="border-color: #f05b9b; color: #f05b9b; font-weight: bold;" onclick="openSellModal()">💰 Sell ke Admin</div>
 </div>
 
 <div id="topup-section" style="margin-top: 10px;">
@@ -694,6 +696,55 @@ header{
     <a id="modalSecondaryBtn" class="btn-secondary" href="https://whatsapp.com/channel/0029Vb8MLHCHLHQgH3KTTV0K" target="_blank" style="display: none;">📋 LIHAT SPEK LENGKAP</a>
 
     <span class="btn-close" onclick="closeModal()">Tutup</span>
+  </div>
+</div>
+
+<!-- MODAL FORMULIR TITIP LAPAK -->
+<div id="titipLapakModal" class="modal">
+  <div class="modal-content">
+    <h3 style="color: #34d399; text-align: center;">📢 Form Titip Lapak / Titip Jual</h3>
+    
+    <div style="background: rgba(16, 185, 129, 0.15); border: 1px solid #10b981; padding: 10px; border-radius: 12px; margin: 12px 0; text-align: center;">
+      <span style="font-size: 11px; color: #a7f3d0; display: block; font-weight: bold;">Syarat & Ketentuan:</span>
+      <p style="font-size: 10px; color: #fff; margin-top: 2px;">
+        Transaksi wajib via Rekber Admin Majlis Jubel. Fee titip/rekber hanya <strong>Rp2.000 - Rp5.000</strong> saat produk laku!
+      </p>
+    </div>
+
+    <div style="display: flex; flex-direction: column; gap: 10px;">
+      <div>
+        <label style="font-size: 11px; color: #ddd; font-weight: bold; margin-bottom: 4px; display: block;">Judul / Nama Produk:</label>
+        <input type="text" id="titipNamaProduk" class="input-field" placeholder="Contoh: Akun MLBB Collector / Gmail Fresh Batch">
+      </div>
+
+      <div>
+        <label style="font-size: 11px; color: #ddd; font-weight: bold; margin-bottom: 4px; display: block;">Kategori Item:</label>
+        <select id="titipKategori" class="input-field">
+          <option value="MLBB">Akun MLBB</option>
+          <option value="Roblox">Roblox</option>
+          <option value="Gmail Fresh">Gmail Fresh / Social Media</option>
+          <option value="Titip Lapak">Lainnya / General Titip</option>
+        </select>
+      </div>
+
+      <div>
+        <label style="font-size: 11px; color: #ddd; font-weight: bold; margin-bottom: 4px; display: block;">Harga Jual Kamu (Rp):</label>
+        <input type="number" id="titipHarga" class="input-field" placeholder="Contoh: 150000">
+      </div>
+
+      <div>
+        <label style="font-size: 11px; color: #ddd; font-weight: bold; margin-bottom: 4px; display: block;">Deskripsi & Spek Lengkap:</label>
+        <textarea id="titipDeskripsi" class="input-field" style="height: 70px; resize: vertical;" placeholder="Tuliskan spesifikasi detail produk kamu..."></textarea>
+      </div>
+
+      <div>
+        <label style="font-size: 11px; color: #ddd; font-weight: bold; margin-bottom: 4px; display: block;">Link Screenshot Spek (ImgBB / Drive / Imgur):</label>
+        <input type="text" id="titipGambar" class="input-field" placeholder="https://i.ibb.co/... (opsional)">
+      </div>
+    </div>
+
+    <button onclick="submitTitipLapakToWA()" class="btn-buy" style="margin-top: 14px; background: #25d366;">📲 Kirim Form ke WA Admin</button>
+    <span class="btn-close" onclick="closeTitipLapakModal()">Batal / Tutup</span>
   </div>
 </div>
 
@@ -789,6 +840,44 @@ async function loadData() {
   } catch (err) {
     console.error("Gagal memuat data:", err);
   }
+}
+
+// FUNGSI TITIP LAPAK
+function openTitipLapakModal() {
+  document.getElementById("titipLapakModal").style.display = "flex";
+}
+
+function closeTitipLapakModal() {
+  document.getElementById("titipLapakModal").style.display = "none";
+}
+
+function submitTitipLapakToWA() {
+  const nama = document.getElementById("titipNamaProduk").value.trim();
+  const kategori = document.getElementById("titipKategori").value;
+  const harga = document.getElementById("titipHarga").value.trim();
+  const desc = document.getElementById("titipDeskripsi").value.trim();
+  const gambar = document.getElementById("titipGambar").value.trim() || "-";
+
+  if (!nama || !harga || !desc) {
+    alert("Harap isi Nama Produk, Harga, dan Deskripsi Spek!");
+    return;
+  }
+
+  const hargaFormatted = Number(harga).toLocaleString("id-ID");
+
+  const textWA = encodeURIComponent(
+    `Halo Admin Majlis Jubel 👋\n\n` +
+    `Saya mau *TITIP LAPAK / TITIP JUAL* produk di website:\n\n` +
+    `📌 *Nama Produk:* ${nama}\n` +
+    `🏷️ *Kategori:* ${kategori}\n` +
+    `💰 *Harga Jual:* Rp ${hargaFormatted}\n` +
+    `📝 *Deskripsi Spek:* ${desc}\n` +
+    `🖼️ *Link Gambar/SS:* ${gambar}\n\n` +
+    `Mohon dipostingkan di katalog Titip Lapak web ya min, terima kasih!`
+  );
+
+  window.open(`https://wa.me/6285179807522?text=${textWA}`, '_blank');
+  closeTitipLapakModal();
 }
 
 // FUNGSI SUPABASE FITUR SELL / DANA RESTOK
@@ -920,6 +1009,7 @@ function renderNokos(keyword) {
   }
 }
 
+// FUNGSI RENDER PRODUK SUPABASE DENGAN SISTEM ID (AMAT SANGAT AMAN DARI ERROR ENTER/PETIK)
 function renderProducts(keyword) {
   const container = document.getElementById("product-container");
   const titleEl = document.getElementById("other-products-title");
@@ -936,12 +1026,12 @@ function renderProducts(keyword) {
   });
 
   if (filtered.length === 0) {
-    titleEl.style.display = "none";
+    if (titleEl) titleEl.style.display = "none";
     container.innerHTML = "";
     return;
   }
 
-  titleEl.style.display = "block";
+  if (titleEl) titleEl.style.display = "block";
   container.innerHTML = filtered.map(p => {
     const name = p.name || "Produk Tanpa Nama";
     const category = p.category || "PRODUK";
@@ -954,7 +1044,6 @@ function renderProducts(keyword) {
     }
 
     const imgUrl = (p.image_url && p.image_url.trim() !== "") ? p.image_url : "";
-    const desc = (p.description || "Belum ada deskripsi").replace(/'/g, "\\'");
 
     let imageHTML = "";
     if (imgUrl) {
@@ -970,7 +1059,7 @@ function renderProducts(keyword) {
     const badgeText = isAvailable ? `STOK: ${stock}` : "SOLD OUT";
 
     return `
-      <div class="card-product" onclick="openModal('${name}', '${desc}', '${priceDisplay}', ${stock}, '${category}')">
+      <div class="card-product" onclick="openProductById('${p.id}')">
         ${imageHTML}
         <div class="card-body">
           ${!imgUrl ? `
@@ -985,6 +1074,24 @@ function renderProducts(keyword) {
       </div>
     `;
   }).join("");
+}
+
+// FUNGSI HELPER MEMBUKA MODAL BERDASARKAN ID PRODUK SUPABASE
+function openProductById(productId) {
+  const p = allProducts.find(item => String(item.id) === String(productId));
+  if (!p) return;
+
+  const name = p.name || "Produk Tanpa Nama";
+  const desc = p.description || "Belum ada deskripsi";
+  const category = p.category || "PRODUK";
+  const stock = (p.stock !== undefined && p.stock !== null) ? Number(p.stock) : 0;
+  
+  let priceDisplay = "Cek Stok";
+  if (p.price && Number(p.price) > 0) {
+    priceDisplay = "Rp " + Number(p.price).toLocaleString("id-ID");
+  }
+
+  openModal(name, desc, priceDisplay, stock, category);
 }
 
 function renderAll() {
@@ -1298,3 +1405,5 @@ document.addEventListener("DOMContentLoaded", () => {
 </script>
 </body>
 </html>
+
+    
