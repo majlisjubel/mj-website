@@ -9,15 +9,6 @@ const URL_TESTI_CHANNEL = "https://whatsapp.com/channel/0029VbDRClmG8l5Clsknh53W
 let currentProduct = { title: '', desc: '', rawPrice: 0, formattedPrice: '', stock: 0, category: '', isTopUp: false, serviceCode: '', gameType: '', sellerPhone: '' };
 let currentQty = 1;
 
-const nokosItems = [
-  { name: 'Nokos WhatsApp', desc: 'Nomor Kosong / OTP Instan WhatsApp Fresh', price: 'Rp 6.000', keywords: 'nokos whatsapp wa', stock: 99, category: 'Nokos' },
-  { name: 'Nokos Facebook', desc: 'Nomor Kosong / OTP Instan Facebook Fresh', price: 'Rp 1.200', keywords: 'nokos facebook fb', stock: 99, category: 'Nokos' },
-  { name: 'Nokos Google / Gmail / YT', desc: 'Nomor Kosong / OTP Instan Google, Gmail, dan YouTube', price: 'Rp 1.200', keywords: 'nokos google gmail youtube yt', stock: 99, category: 'Nokos' },
-  { name: 'Nokos DANA', desc: 'Nomor Kosong / OTP Instan Aplikasi DANA', price: 'Rp 3.000', keywords: 'nokos dana', stock: 99, category: 'Nokos' },
-  { name: 'Nokos OVO', desc: 'Nomor Kosong / OTP Instan Aplikasi OVO', price: 'Rp 1.600', keywords: 'nokos ovo', stock: 99, category: 'Nokos' },
-  { name: 'Nokos SeaBank', desc: 'Nomor Kosong / OTP Instan Aplikasi SeaBank', price: 'Rp 3.000', keywords: 'nokos seabank', stock: 99, category: 'Nokos' }
-];
-
 const SUPABASE_URL = "https://sgadlmoskhfyyksobggk.supabase.co";
 const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNnYWRsbW9za2hmeXlrc29iZ2drIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTA5NzcxNzksImV4cCI6MjEwNjU1MzE3OX0.XASgEjWt-PEK0jsFAkncDGfQ7Tu8JHDtW3eHIqn0mwk";
 const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
@@ -153,77 +144,7 @@ function submitSellToWA() {
   closeSellModal();
 }
 
-function renderTopup(keyword) {
-  const topupGrid = document.getElementById("topup-grid");
-  const topupSection = document.getElementById("topup-section");
 
-  if (currentCategory !== 'Beranda' && currentCategory !== 'Top Up') {
-    topupSection.style.display = "none";
-    return;
-  }
-
-  const filteredTopup = topupItems.filter(item => {
-    const text = (item.name + " " + item.desc).toLowerCase();
-    return text.includes(keyword);
-  });
-
-  if (filteredTopup.length === 0) {
-    topupSection.style.display = "none";
-  } else {
-    topupSection.style.display = "block";
-    topupGrid.innerHTML = filteredTopup.map(item => {
-      const isAvailable = item.stock > 0;
-      const badgeClass = isAvailable ? "badge-tag" : "badge-tag badge-soldout";
-      const badgeText = isAvailable ? "INSTAN" : "SOLD OUT";
-
-      return `
-        <div class="card-product" onclick="openTopupModal('${item.name}', '${item.desc}', '${item.price}', ${item.rawPrice}, '${item.serviceCode}', '${item.gameType}', ${item.stock})">
-          <div class="card-body">
-            <div class="card-header-badge">
-              <span class="${badgeClass}">${badgeText}</span>
-              <span class="nokos-badge-game">${item.gameType}</span>
-            </div>
-            <h3 class="card-title">💎 ${item.name}</h3>
-            <div class="card-price">${item.price}</div>
-          </div>
-        </div>
-      `;
-    }).join("");
-  }
-}
-
-function renderNokos(keyword) {
-  const nokosGrid = document.getElementById("nokos-grid");
-  const nokosSection = document.getElementById("nokos-section");
-
-  if (currentCategory !== 'Beranda' && currentCategory !== 'Nokos') {
-    nokosSection.style.display = "none";
-    return;
-  }
-
-  const filteredNokos = nokosItems.filter(item => {
-    const text = (item.name + " " + item.desc + " " + item.keywords).toLowerCase();
-    return text.includes(keyword);
-  });
-
-  if (filteredNokos.length === 0) {
-    nokosSection.style.display = "none";
-  } else {
-    nokosSection.style.display = "block";
-    nokosGrid.innerHTML = filteredNokos.map(item => `
-      <div class="card-product" onclick="openModal('${item.name}', '${item.desc}', '${item.price}', ${item.stock}, '${item.category}')">
-        <div class="card-body">
-          <div class="card-header-badge">
-            <span class="badge-tag">READY (${item.stock})</span>
-            <span class="nokos-badge-game">NOKOS</span>
-          </div>
-          <h3 class="card-title">🔹 ${item.name.replace('Nokos ', '')}</h3>
-          <div class="card-price">${item.price}</div>
-        </div>
-      </div>
-    `).join("");
-  }
-}
 
 // FUNGSI RENDER PRODUK SUPABASE DENGAN SISTEM ID
 function renderProducts(keyword) {
