@@ -4,13 +4,37 @@
   padding: 0;
 }
 
+
 body{
-  background: linear-gradient(rgba(13,11,16,0.85), rgba(13,11,16,0.95)),
-    url("https://raw.githubusercontent.com/oyekrani-sketch/mj-website/dc71dc504799d5b16c702470f0767ea4111604ec/file_00000000e9b8821188dab8708a1fda9c.png") center top / cover;
+  background-color: #050907;
+  background-image:
+    radial-gradient(
+      ellipse at 15% 5%,
+      rgba(12, 105, 66, 0.32),
+      transparent 42%
+    ),
+    radial-gradient(
+      ellipse at 90% 35%,
+      rgba(181, 137, 55, 0.10),
+      transparent 38%
+    ),
+    radial-gradient(
+      ellipse at 50% 100%,
+      rgba(8, 75, 49, 0.22),
+      transparent 50%
+    ),
+    linear-gradient(
+      160deg,
+      #071b14 0%,
+      #090e0b 48%,
+      #030605 100%
+    );
+
   color: white;
   padding-bottom: 100px;
   font-family: system-ui, -apple-system, sans-serif;
 }
+
 
 .container{
   max-width: 520px;
